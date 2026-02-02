@@ -21,9 +21,6 @@ struct BannerItemView: View {
 
     var body: some View {
         KFImage(URL(string: imageUrl))
-            .placeholder { ProgressView() }
-            .resizable()
-            .scaledToFill()
             .onSuccess { result in
                 let size = result.image.size
                 guard size.width > 0 else { return }
@@ -32,8 +29,12 @@ struct BannerItemView: View {
                     aspectRatio = ratio
                 }
             }
+            .placeholder { ProgressView() }
+            .resizable()
+            .scaledToFill()
             .frame(width: width, height: width * aspectRatio)
             .clipped()
             .clipShape(RoundedRectangle(cornerRadius: 12))
     }
 }
+
