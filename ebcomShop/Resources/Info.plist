@@ -4,9 +4,9 @@
 <dict>
 	<key>UIAppFonts</key>
 	<array>
-		<string>Iranyekan.ttf</string>
-		<string>Iranyekan-bold.ttf</string>
-		<string>Iranyekan-medium.ttf</string>
+		<string>IRANYekan.ttf</string>
+		<string>IRANYekan-Bold.ttf</string>
+		<string>IRANYekan-Medium.ttf</string>
 	</array>
 </dict>
 </plist>
