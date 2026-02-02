@@ -7,12 +7,13 @@
 
 import Foundation
 import Observation
+import SwiftData
 
 @MainActor
 @Observable
 final class SearchViewModel {
     private let homeService: HomeServiceProtocol
-    private let historyKey = "search_history"
+    private let modelContext: ModelContext
     private let maxHistoryCount = 10
     private var searchTask: Task<Void, Never>?
 
@@ -24,9 +25,10 @@ final class SearchViewModel {
     private(set) var loadError: NetworkError?
     private(set) var shouldShowEmptyState = false
 
-    init(homeService: HomeServiceProtocol) {
+    init(homeService: HomeServiceProtocol, modelContext: ModelContext) {
         self.homeService = homeService
-        self.history = Self.loadHistory(key: historyKey)
+        self.modelContext = modelContext
+        self.history = loadHistory()
     }
 
     func load() async {
@@ -82,8 +84,8 @@ final class SearchViewModel {
     }
 
     func deleteHistory(_ term: String) {
-        history.removeAll { $0.caseInsensitiveCompare(term) == .orderedSame }
-        Self.saveHistory(history, key: historyKey)
+        deleteHistoryEntries(matching: term)
+        history = loadHistory()
     }
 
     private func performSearch(for term: String) {
@@ -116,25 +118,43 @@ final class SearchViewModel {
     private func storeHistory(term: String) {
         let trimmed = trimmedQuery(term)
         guard !trimmed.isEmpty else { return }
-        history.removeAll { $0.caseInsensitiveCompare(trimmed) == .orderedSame }
-        history.insert(trimmed, at: 0)
-
-        if history.count > maxHistoryCount {
-            history = Array(history.prefix(maxHistoryCount))
-        }
-
-        Self.saveHistory(history, key: historyKey)
+        deleteHistoryEntries(matching: trimmed)
+        let entry = SearchHistoryEntry(term: trimmed, createdAt: Date())
+        modelContext.insert(entry)
+        trimHistoryToMaxCount()
+        try? modelContext.save()
+        history = loadHistory()
     }
 
     private func trimmedQuery(_ value: String) -> String {
         value.trimmingCharacters(in: .whitespacesAndNewlines)
     }
 
-    private static func loadHistory(key: String) -> [String] {
-        UserDefaults.standard.stringArray(forKey: key) ?? []
+    private func loadHistory() -> [String] {
+        let descriptor = FetchDescriptor<SearchHistoryEntry>(
+            sortBy: [SortDescriptor<SearchHistoryEntry>(\.createdAt, order: .reverse)]
+        )
+        let entries = (try? modelContext.fetch(descriptor)) ?? []
+        return entries.map(\.term)
     }
 
-    private static func saveHistory(_ history: [String], key: String) {
-        UserDefaults.standard.set(history, forKey: key)
+    private func deleteHistoryEntries(matching term: String) {
+        let descriptor = FetchDescriptor<SearchHistoryEntry>()
+        let entries = (try? modelContext.fetch(descriptor)) ?? []
+        for entry in entries where entry.term.caseInsensitiveCompare(term) == .orderedSame {
+            modelContext.delete(entry)
+        }
+        try? modelContext.save()
+    }
+
+    private func trimHistoryToMaxCount() {
+        let descriptor = FetchDescriptor<SearchHistoryEntry>(
+            sortBy: [SortDescriptor<SearchHistoryEntry>(\.createdAt, order: .reverse)]
+        )
+        guard let entries = try? modelContext.fetch(descriptor), entries.count > maxHistoryCount else { return }
+        let toDelete = entries.suffix(entries.count - maxHistoryCount)
+        for entry in toDelete {
+            modelContext.delete(entry)
+        }
     }
 }

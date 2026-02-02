@@ -10,6 +10,7 @@ import SwiftUI
 
 struct SearchView: View {
     @Environment(\.homeService) private var homeService
+    @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
     @State private var viewModel: SearchViewModel?
 
@@ -20,7 +21,7 @@ struct SearchView: View {
             } else {
                 ProgressView()
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    .task { viewModel = SearchViewModel(homeService: homeService) }
+                    .task { viewModel = SearchViewModel(homeService: homeService, modelContext: modelContext) }
             }
         }
         .navigationBarTitleDisplayMode(.inline)
