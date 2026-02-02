@@ -65,7 +65,7 @@ final class SearchViewModel {
 
         searchTask = Task { [weak self] in
             try? await Task.sleep(for: .milliseconds(300))
-            await self?.performSearch(for: trimmed)
+            self?.performSearch(for: trimmed)
         }
     }
 
