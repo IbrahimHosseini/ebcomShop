@@ -175,6 +175,7 @@ struct SearchView: View {
         )
     }
 
+    /// Vertical list of found shops (logo, title, tags). Data comes from local filter on fetched shops only.
     @ViewBuilder
     private func resultsList(@Bindable viewModel: SearchViewModel) -> some View {
         if viewModel.query.trimmingCharacters(in: .whitespacesAndNewlines).count >= 3 {
@@ -211,6 +212,7 @@ struct SearchView: View {
     }
 }
 
+/// Single row in search results: logo, title, and tags (vertical list item).
 private struct SearchResultRow: View {
     let shop: ShopModel
 

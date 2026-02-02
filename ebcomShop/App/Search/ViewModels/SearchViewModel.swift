@@ -32,6 +32,7 @@ final class SearchViewModel {
         self.history = searchHistoryRepository.fetchTerms()
     }
 
+    /// Fetches shops from the server once. All search is then done locally on this data.
     func load() async {
         isLoading = true
         loadError = nil
@@ -89,6 +90,9 @@ final class SearchViewModel {
         history = searchHistoryRepository.fetchTerms()
     }
 
+    // MARK: - Search (local on fetched data only)
+    // Source: allShops from server. Filter: title or tags. Result: matches for vertical list (logo, title, tags).
+
     private func performSearch(for term: String) {
         let trimmed = trimmedQuery(term)
         guard trimmedQuery(query) == trimmed else { return }
@@ -110,6 +114,7 @@ final class SearchViewModel {
         }
     }
 
+    /// Matches term against shop title or any related tag (case-insensitive).
     private func matchesShop(_ shop: ShopModel, with term: String) -> Bool {
         let matchesTitle = shop.title.localizedCaseInsensitiveContains(term)
         let matchesTags = shop.tags?.contains { $0.localizedCaseInsensitiveContains(term) } ?? false
