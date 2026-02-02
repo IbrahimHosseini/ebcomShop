@@ -91,7 +91,7 @@ final class NetworkConfiguration {
     /// - Hardcoded defaults as final fallback
     private init() {
         // Initialize with default values
-        self.baseURL = "https://api-lifeforge.thepixelforge.app"
+        self.baseURL = "http://185.204.197.213:5906"
         self.requestTimeout = 30.0
         self.maxRetryAttempts = 3
         self.isLoggingEnabled = false
@@ -159,13 +159,13 @@ final class NetworkConfiguration {
         }
 
         // Fallback to API_BASE_URL if needed
-        if baseURL == "https://api-lifeforge.thepixelforge.app" || !validateBaseURL(baseURL) {
+        if baseURL == "http://185.204.197.213:5906" || !validateBaseURL(baseURL) {
             tryAPIBaseURLFallback(infoDictionary: infoDictionary)
         }
 
         // Final validation
         if !validateBaseURL(baseURL) {
-            baseURL = "https://api-lifeforge.thepixelforge.app"
+            baseURL = "http://185.204.197.213:5906"
         }
     }
 
