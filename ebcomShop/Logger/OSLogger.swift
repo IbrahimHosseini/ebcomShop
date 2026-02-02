@@ -1,5 +1,5 @@
 //
-//  and.swift
+//  OSLogger.swift
 //  ebcomShop
 //
 //  Created by Ibrahim on 2026-02-02.
@@ -151,13 +151,7 @@ enum OSLogger {
 
     /// Defines the available logging categories for different app components.
     enum Category: String {
-        case `default` = "LifeForge"
-        case notification = "NotificationManager"
-        case notificationRepository = "NotificationRepository"
-        case notificationService = "NotificationService"
-        case notificationDelegate = "NotificationDelegate"
-        case taskLiveActivity = "TaskLiveActivity"
-        case reminder = "Reminder"
+        case `default` = "EBCOM SHOP"
     }
 
     /// Defines the possible delimiters used between logged items in the output.

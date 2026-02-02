@@ -1,5 +1,5 @@
 //
-//  establishes.swift
+//  APIEndpoint.swift
 //  ebcomShop
 //
 //  Created by Ibrahim on 2026-02-02.
@@ -98,7 +98,7 @@ extension APIEndpoint {
     /// Default to requiring authentication for all endpoints
     ///
     /// Override this property to return false for public endpoints like login, register, etc.
-    var requiresAuthentication: Bool { true }
+    var requiresAuthentication: Bool { false }
 }
 
 // MARK: - URLRequest Conversion

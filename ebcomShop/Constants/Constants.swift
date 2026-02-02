@@ -1,3 +1,11 @@
+//
+//  Constants.swift
+//  ebcomShop
+//
+//  Created by Ibrahim on 2026-02-02.
+//
+
+
 import Foundation
 
 typealias ResponseResult<T> = Result<T, NetworkError>
