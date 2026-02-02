@@ -5,6 +5,7 @@
 //  Created by Ibrahim on 2026-02-02.
 //
 
+import Kingfisher
 import Observation
 import SwiftUI
 
@@ -219,19 +220,13 @@ private struct SearchResultRow: View {
 
     var body: some View {
         HStack(alignment: .top, spacing: 12) {
-            AsyncImage(url: URL(string: shop.iconUrl)) { phase in
-                if let image = phase.image {
-                    image
-                        .resizable()
-                        .scaledToFit()
-                } else if phase.error != nil {
-                    Color(.systemGray5)
-                } else {
-                    ProgressView()
-                }
-            }
-            .frame(width: 48, height: 48)
-            .clipShape(RoundedRectangle(cornerRadius: 10))
+            KFImage(URL(string: shop.iconUrl))
+                .placeholder { ProgressView() }
+                .fade(duration: 0.25)
+                .resizable()
+                .scaledToFit()
+                .frame(width: 48, height: 48)
+                .clipShape(RoundedRectangle(cornerRadius: 10))
 
             VStack(alignment: .leading, spacing: 6) {
                 Text(shop.title)
