@@ -38,21 +38,21 @@ final class NetworkConfiguration {
             return
         }
 
-        if let url = (info["NETWORK_BASE_URL"] as? String)?.trimmingCharacters(in: .whitespacesAndNewlines),
+        if let url = (info[Constants.NetworkConfigKey.baseURL] as? String)?.trimmingCharacters(in: .whitespacesAndNewlines),
            !url.isEmpty, validateBaseURL(url) {
             baseURL = url
-        } else if let url = (info["API_BASE_URL"] as? String)?.trimmingCharacters(in: .whitespacesAndNewlines),
+        } else if let url = (info[Constants.NetworkConfigKey.apiBaseURL] as? String)?.trimmingCharacters(in: .whitespacesAndNewlines),
                   !url.isEmpty, validateBaseURL(url) {
             baseURL = url
         }
 
-        if let s = info["NETWORK_REQUEST_TIMEOUT"] as? String, let t = Double(s) {
+        if let s = info[Constants.NetworkConfigKey.requestTimeout] as? String, let t = Double(s) {
             requestTimeout = t
         }
-        if let s = info["NETWORK_MAX_RETRY_ATTEMPTS"] as? String, let n = Int(s) {
+        if let s = info[Constants.NetworkConfigKey.maxRetryAttempts] as? String, let n = Int(s) {
             maxRetryAttempts = n
         }
-        if let s = info["NETWORK_LOGGING_ENABLED"] as? String {
+        if let s = info[Constants.NetworkConfigKey.loggingEnabled] as? String {
             isLoggingEnabled = s.lowercased() == "yes" || s.lowercased() == "true"
         }
     }
