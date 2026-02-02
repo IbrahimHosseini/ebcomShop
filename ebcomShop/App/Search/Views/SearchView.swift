@@ -52,7 +52,7 @@ struct SearchView: View {
                 .padding(.top, 8)
             }
         }
-        .background(Color(.systemBackground))
+        .background(Color.background)
         .task {
             await viewModel.load()
         }
@@ -76,8 +76,7 @@ struct SearchView: View {
                 Button {
                     viewModel.clearQuery()
                 } label: {
-                    Image(systemName: "xmark.circle.fill")
-                        .foregroundStyle(.gray400)
+                    Image(.closeCircle)
                 }
                 .buttonStyle(.plain)
             }
@@ -85,7 +84,7 @@ struct SearchView: View {
         .padding(.horizontal, 12)
         .frame(height: 48)
         .frame(maxWidth: .infinity)
-        .background(Color(.systemBackground))
+        .background(Color.background)
         .clipShape(RoundedRectangle(cornerRadius: 6))
         .overlay(
             RoundedRectangle(cornerRadius: 6)
@@ -125,8 +124,8 @@ struct SearchView: View {
             Button {
                 viewModel.deleteHistory(term)
             } label: {
-                Image(systemName: "xmark")
-                    .font(.system(size: 10, weight: .semibold))
+                Image(.delete)
+                    .typography(.caption2)
                     .foregroundStyle(.gray400)
             }
             .buttonStyle(.plain)
