@@ -38,23 +38,23 @@ enum NetworkError: LocalizedError, Sendable {
     var errorDescription: String? {
         switch self {
         case .invalidURL:
-            "The provided URL is invalid or malformed"
+            "آدرس اینترنتی نامعتبر یا نادرست است"
         case .noData:
-            "No data received from the server"
+            "داده‌ای از سرور دریافت نشد"
         case .decodingFailed:
-            "Failed to decode the server response"
+            "پردازش پاسخ سرور با خطا مواجه شد"
         case .badRequest:
-            "The request was invalid or malformed"
+            "درخواست نامعتبر یا نادرست است"
         case .notFound:
-            "The requested resource was not found"
+            "منبع درخواستی یافت نشد"
         case .authorizationFailed:
-            "Authentication or authorization failed"
+            "احراز هویت یا مجوز دسترسی با خطا مواجه شد"
         case .serverError:
-            "Internal server error occurred"
+            "خطای داخلی سرور رخ داده است"
         case .timeout:
-            "The request timed out"
+            "زمان درخواست به پایان رسید"
         case .noInternetConnection:
-            "No internet connection available"
+            "اتصال اینترنت برقرار نیست"
         }
     }
 
