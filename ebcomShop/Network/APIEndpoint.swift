@@ -186,8 +186,12 @@ extension APIEndpoint {
         // Apply all headers to the request
         request.allHTTPHeaderFields = headers
 
-        // Apply raw body if provided
-        request.httpBody = body?.jsonData
+        // GET must not have a body; only set body for other methods
+        if method != .get,
+           let data = body?.jsonData,
+           !data.isEmpty {
+            request.httpBody = data
+        }
 
         return request
     }
