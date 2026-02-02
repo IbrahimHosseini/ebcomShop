@@ -13,7 +13,7 @@ import SwiftUI
 ///     }
 /// }
 /// ```
-public struct ReusableToolbarItem<Label: View>: View {
+public struct ReusableToolbarItem<Label: View>: ToolbarContent {
     private let placement: ToolbarItemPlacement
     private let action: () -> Void
     private let label: () -> Label
@@ -79,7 +79,7 @@ public struct ReusableToolbarItem<Label: View>: View {
         }
     }
 
-    public var body: some View {
+    public var body: some ToolbarContent {
         ToolbarItem(placement: placement) {
             Button(role: role, action: action) {
                 label()
@@ -88,31 +88,3 @@ public struct ReusableToolbarItem<Label: View>: View {
         }
     }
 }
-
-#if DEBUG
-private struct ReusableToolbarItem_Previews: PreviewProvider {
-    struct DemoView: View {
-        @State private var count = 0
-        var body: some View {
-            NavigationStack {
-                VStack(spacing: 16) {
-                    Text("Count: \(count)")
-                }
-                .navigationTitle("Toolbar Demo")
-                .toolbar {
-                    ReusableToolbarItem(placement: .topBarTrailing, systemImage: "plus") {
-                        count += 1
-                    }
-                    ReusableToolbarItem(placement: .topBarLeading, title: "Reset", role: .destructive, disabled: count == 0) {
-                        count = 0
-                    }
-                }
-            }
-        }
-    }
-
-    static var previews: some View {
-        DemoView()
-    }
-}
-#endif

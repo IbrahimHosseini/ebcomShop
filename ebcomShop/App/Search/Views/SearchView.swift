@@ -10,6 +10,7 @@ import SwiftUI
 
 struct SearchView: View {
     @Environment(\.homeService) private var homeService
+    @Environment(\.dismiss) private var dismiss
     @State private var viewModel: SearchViewModel?
 
     var body: some View {
@@ -22,8 +23,36 @@ struct SearchView: View {
                     .task { viewModel = SearchViewModel(homeService: homeService) }
             }
         }
-        .navigationTitle("جستجو")
         .navigationBarTitleDisplayMode(.inline)
+        .navigationBarBackButtonHidden(true)
+        .toolbar {
+            if #available(iOS 26.0, *) {
+                ToolbarItem(placement: .topBarLeading) {
+                    Button {
+                        dismiss()
+                    } label: {
+                        Image(.back)
+                    }
+                    .buttonStyle(.plain)
+                }
+                .sharedBackgroundVisibility(.hidden)
+            } else {
+                ToolbarItem(placement: .topBarLeading) {
+                    Button {
+                        dismiss()
+                    } label: {
+                        Image(.back)
+                    }
+                    .buttonStyle(.plain)
+                }
+            }
+            
+            ToolbarItem(placement: .principal) {
+                Text("جستجو")
+                    .font(.customMedium(12))
+                    .foregroundStyle(Color.gray300)
+            }
+        }
     }
 
     @ViewBuilder
@@ -49,7 +78,7 @@ struct SearchView: View {
                         resultsList(viewModel: viewModel)
                     }
                 }
-                .padding(.top, 8)
+                .padding(.top, 28)
             }
         }
         .background(Color.background)
