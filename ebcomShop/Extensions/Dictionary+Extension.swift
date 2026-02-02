@@ -8,6 +8,22 @@
 
 import Foundation
 
+// MARK: - String value by key
+
+extension Dictionary where Key == String {
+    /// Returns the value for `key` as a String, trimmed of whitespace and newlines, or nil.
+    func trimmedString(forKey key: String) -> String? {
+        (self[key] as? String)?.trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+
+    /// Returns the value for `key` as a String, or nil.
+    func string(forKey key: String) -> String? {
+        self[key] as? String
+    }
+}
+
+// MARK: - JSON serialization
+
 /// Extensions for Dictionary to support JSON serialization
 public extension Dictionary {
     /// Converts the dictionary to JSON data

@@ -18,8 +18,7 @@ enum Constants {
 
     /// Info.plist keys for network configuration (from .xcconfig)
     enum NetworkConfigKey {
-        static let baseURL = "NETWORK_BASE_URL"
-        static let apiBaseURL = "API_BASE_URL"
+        static let baseURL = "API_BASE_URL"
         static let requestTimeout = "NETWORK_REQUEST_TIMEOUT"
         static let maxRetryAttempts = "NETWORK_MAX_RETRY_ATTEMPTS"
         static let loggingEnabled = "NETWORK_LOGGING_ENABLED"

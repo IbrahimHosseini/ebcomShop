@@ -2,6 +2,16 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>API_BASE_URL</key>
+	<string>$(API_BASE_URL)</string>
+	<key>NETWORK_REQUEST_TIMEOUT</key>
+	<string>$(NETWORK_REQUEST_TIMEOUT)</string>
+	<key>NETWORK_MAX_RETRY_ATTEMPTS</key>
+	<string>$(NETWORK_MAX_RETRY_ATTEMPTS)</string>
+	<key>NETWORK_LOGGING_ENABLED</key>
+	<string>$(NETWORK_LOGGING_ENABLED)</string>
+	<key>Environment</key>
+	<string>$(ENVIRONMENT)</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>IRANYekan.ttf</string>
