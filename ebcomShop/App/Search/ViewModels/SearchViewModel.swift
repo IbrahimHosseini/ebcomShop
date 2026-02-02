@@ -23,7 +23,10 @@ final class SearchViewModel {
     private(set) var loadError: NetworkError?
     private(set) var shouldShowEmptyState = false
 
-    init(homeService: HomeServiceProtocol, searchHistoryRepository: SearchHistoryRepositoryProtocol) {
+    init(
+        homeService: HomeServiceProtocol,
+        searchHistoryRepository: SearchHistoryRepositoryProtocol
+    ) {
         self.homeService = homeService
         self.searchHistoryRepository = searchHistoryRepository
         self.history = searchHistoryRepository.fetchTerms()

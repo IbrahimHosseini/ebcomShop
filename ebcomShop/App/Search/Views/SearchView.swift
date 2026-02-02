@@ -21,7 +21,12 @@ struct SearchView: View {
             } else {
                 ProgressView()
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    .task { viewModel = SearchViewModel(homeService: homeService, searchHistoryRepository: SearchHistoryRepository(modelContext: modelContext)) }
+                    .task {
+                        viewModel = SearchViewModel(
+                            homeService: homeService,
+                            searchHistoryRepository: SearchHistoryRepository(modelContext: modelContext)
+                        )
+                    }
             }
         }
         .navigationBarTitleDisplayMode(.inline)
