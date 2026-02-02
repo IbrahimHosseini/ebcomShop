@@ -6,56 +6,79 @@
 //
 
 import SwiftUI
-import SwiftData
 
 struct HomeView: View {
-    @Environment(\.modelContext) private var modelContext
-    @Query private var items: [Item]
+    @Environment(\.homeService) private var homeService
+    @State private var viewModel: HomeViewModel?
 
     var body: some View {
-        NavigationSplitView {
-            List {
-                ForEach(items) { item in
-                    NavigationLink {
-                        Text("Item at \(item.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))")
-                    } label: {
-                        Text(item.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))
-                    }
-                }
-                .onDelete(perform: deleteItems)
+        Group {
+            if let viewModel {
+                content(viewModel: viewModel)
+            } else {
+                ProgressView()
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .task { viewModel = HomeViewModel(homeService: homeService) }
             }
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    EditButton()
-                }
-                ToolbarItem {
-                    Button(action: addItem) {
-                        Label("Add Item", systemImage: "plus")
-                    }
-                }
-            }
-        } detail: {
-            Text("Select an item")
         }
     }
 
-    private func addItem() {
-        withAnimation {
-            let newItem = Item(timestamp: Date())
-            modelContext.insert(newItem)
+    @ViewBuilder
+    private func content(viewModel: HomeViewModel) -> some View {
+        ScrollView {
+            LazyVStack(spacing: 0) {
+                if viewModel.isLoading {
+                    ProgressView()
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 40)
+                } else if viewModel.loadError != nil {
+                    errorView(viewModel: viewModel)
+                } else {
+                    ForEach(Array(viewModel.sections.enumerated()), id: \.offset) { _, section in
+                        sectionView(for: section)
+                    }
+                    if let faq = viewModel.faq {
+                        FAQSectionView(faq: faq)
+                    }
+                }
+            }
+        }
+        .refreshable {
+            await viewModel.load()
+        }
+        .task {
+            await viewModel.load()
         }
     }
 
-    private func deleteItems(offsets: IndexSet) {
-        withAnimation {
-            for index in offsets {
-                modelContext.delete(items[index])
-            }
+    @ViewBuilder
+    private func sectionView(for section: HomeSectionItem) -> some View {
+        switch section {
+        case .category(let title, let items):
+            CategorySectionView(title: title, items: items)
+        case .banner(let items):
+            BannerSectionView(items: items)
+        case .shop(let title, let items):
+            ShopSectionView(title: title, items: items)
+        case .fixedBanner(let title, let items):
+            FixedBannerSectionView(title: title, items: items)
         }
+    }
+
+    private func errorView(viewModel: HomeViewModel) -> some View {
+        VStack(spacing: 12) {
+            Text("خطا در بارگذاری")
+                .typography(.headline)
+            Text(viewModel.loadError?.localizedDescription ?? "")
+                .typography(.footnote)
+                .multilineTextAlignment(.center)
+        }
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, 40)
     }
 }
 
 #Preview {
     HomeView()
-        .modelContainer(for: Item.self, inMemory: true)
+        .environment(\.homeService, HomeServiceImpl())
 }

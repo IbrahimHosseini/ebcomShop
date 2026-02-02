@@ -26,6 +26,7 @@ struct ebcomShopApp: App {
     var body: some Scene {
         WindowGroup {
             HomeView()
+                .environment(\.homeService, HomeServiceImpl())
         }
         .modelContainer(sharedModelContainer)
     }
