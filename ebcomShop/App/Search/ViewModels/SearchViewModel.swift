@@ -7,14 +7,12 @@
 
 import Foundation
 import Observation
-import SwiftData
 
 @MainActor
 @Observable
 final class SearchViewModel {
     private let homeService: HomeServiceProtocol
-    private let modelContext: ModelContext
-    private let maxHistoryCount = 10
+    private let searchHistoryRepository: SearchHistoryRepositoryProtocol
     private var searchTask: Task<Void, Never>?
 
     var query = ""
@@ -25,10 +23,10 @@ final class SearchViewModel {
     private(set) var loadError: NetworkError?
     private(set) var shouldShowEmptyState = false
 
-    init(homeService: HomeServiceProtocol, modelContext: ModelContext) {
+    init(homeService: HomeServiceProtocol, searchHistoryRepository: SearchHistoryRepositoryProtocol) {
         self.homeService = homeService
-        self.modelContext = modelContext
-        self.history = loadHistory()
+        self.searchHistoryRepository = searchHistoryRepository
+        self.history = searchHistoryRepository.fetchTerms()
     }
 
     func load() async {
@@ -84,8 +82,8 @@ final class SearchViewModel {
     }
 
     func deleteHistory(_ term: String) {
-        deleteHistoryEntries(matching: term)
-        history = loadHistory()
+        try? searchHistoryRepository.delete(matching: term)
+        history = searchHistoryRepository.fetchTerms()
     }
 
     private func performSearch(for term: String) {
@@ -118,43 +116,11 @@ final class SearchViewModel {
     private func storeHistory(term: String) {
         let trimmed = trimmedQuery(term)
         guard !trimmed.isEmpty else { return }
-        deleteHistoryEntries(matching: trimmed)
-        let entry = SearchHistoryEntry(term: trimmed, createdAt: Date())
-        modelContext.insert(entry)
-        trimHistoryToMaxCount()
-        try? modelContext.save()
-        history = loadHistory()
+        try? searchHistoryRepository.add(term: trimmed)
+        history = searchHistoryRepository.fetchTerms()
     }
 
     private func trimmedQuery(_ value: String) -> String {
         value.trimmingCharacters(in: .whitespacesAndNewlines)
-    }
-
-    private func loadHistory() -> [String] {
-        let descriptor = FetchDescriptor<SearchHistoryEntry>(
-            sortBy: [SortDescriptor<SearchHistoryEntry>(\.createdAt, order: .reverse)]
-        )
-        let entries = (try? modelContext.fetch(descriptor)) ?? []
-        return entries.map(\.term)
-    }
-
-    private func deleteHistoryEntries(matching term: String) {
-        let descriptor = FetchDescriptor<SearchHistoryEntry>()
-        let entries = (try? modelContext.fetch(descriptor)) ?? []
-        for entry in entries where entry.term.caseInsensitiveCompare(term) == .orderedSame {
-            modelContext.delete(entry)
-        }
-        try? modelContext.save()
-    }
-
-    private func trimHistoryToMaxCount() {
-        let descriptor = FetchDescriptor<SearchHistoryEntry>(
-            sortBy: [SortDescriptor<SearchHistoryEntry>(\.createdAt, order: .reverse)]
-        )
-        guard let entries = try? modelContext.fetch(descriptor), entries.count > maxHistoryCount else { return }
-        let toDelete = entries.suffix(entries.count - maxHistoryCount)
-        for entry in toDelete {
-            modelContext.delete(entry)
-        }
     }
 }
