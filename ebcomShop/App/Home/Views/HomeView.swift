@@ -12,33 +12,38 @@ struct HomeView: View {
     @State private var viewModel: HomeViewModel?
 
     var body: some View {
-        Group {
-            if let viewModel {
-                content(viewModel: viewModel)
-            } else {
-                ProgressView()
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    .task { viewModel = HomeViewModel(homeService: homeService) }
+        NavigationStack {
+            Group {
+                if let viewModel {
+                    content(viewModel: viewModel)
+                } else {
+                    ProgressView()
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                        .task { viewModel = HomeViewModel(homeService: homeService) }
+                }
             }
         }
     }
 
     @ViewBuilder
     private func content(viewModel: HomeViewModel) -> some View {
-        ScrollView {
-            LazyVStack(spacing: 0) {
-                if viewModel.isLoading {
-                    ProgressView()
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, 40)
-                } else if viewModel.loadError != nil {
-                    errorView(viewModel: viewModel)
-                } else {
-                    ForEach(Array(viewModel.sections.enumerated()), id: \.offset) { _, section in
-                        sectionView(for: section)
-                    }
-                    if let faq = viewModel.faq {
-                        FAQSectionView(faq: faq)
+        VStack(spacing: 0) {
+            headerView
+            ScrollView {
+                LazyVStack(spacing: 0) {
+                    if viewModel.isLoading {
+                        ProgressView()
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 40)
+                    } else if viewModel.loadError != nil {
+                        errorView(viewModel: viewModel)
+                    } else {
+                        ForEach(Array(viewModel.sections.enumerated()), id: \.offset) { _, section in
+                            sectionView(for: section)
+                        }
+                        if let faq = viewModel.faq {
+                            FAQSectionView(faq: faq)
+                        }
                     }
                 }
             }
@@ -49,6 +54,45 @@ struct HomeView: View {
         .task {
             await viewModel.load()
         }
+    }
+
+    private var headerView: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Image(.logo)
+                .resizable()
+                .scaledToFit()
+                .frame(maxHeight: 16)
+                .padding(.horizontal, 16)
+                .padding(.top, 8)
+                .padding(.bottom, 24)
+
+            NavigationLink(destination: SearchView()) {
+                HStack(spacing: 8) {
+                    Image(.search)
+                        .renderingMode(.template)
+                        .foregroundStyle(.gray400)
+                    
+                    Text("جستجو فروشگاه یا برند...")
+                        .typography(.callout)
+                        .foregroundStyle(Color("gray400"))
+                    Spacer(minLength: 0)
+                    
+                }
+                .padding(.horizontal, 12)
+                .frame(height: 48)
+                .frame(maxWidth: .infinity)
+                .background(Color(.systemBackground))
+                .clipShape(RoundedRectangle(cornerRadius: 6))
+                .overlay(
+                    RoundedRectangle(cornerRadius: 6)
+                        .stroke(.gray200, lineWidth: 1)
+                )
+            }
+            .buttonStyle(.plain)
+            .padding(.horizontal, 16)
+            .padding(.bottom, 16)
+        }
+        .background(Color(.systemBackground))
     }
 
     @ViewBuilder
