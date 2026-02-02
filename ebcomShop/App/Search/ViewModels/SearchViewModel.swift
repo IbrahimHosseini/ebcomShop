@@ -23,6 +23,9 @@ final class SearchViewModel {
     private(set) var loadError: NetworkError?
     private(set) var shouldShowEmptyState = false
 
+    /// Tag ID → title from last home response; used to resolve shop tag IDs for search and display.
+    private var tagIdToTitle: [String: String] = [:]
+
     init(
         homeService: HomeServiceProtocol,
         searchHistoryRepository: SearchHistoryRepositoryProtocol
@@ -42,12 +45,14 @@ final class SearchViewModel {
         switch result {
         case .success(let response):
             allShops = response.shops
+            tagIdToTitle = buildTagIdToTitle(from: response.tags)
             if trimmedQuery(query).count >= 3 {
                 performSearch(for: query)
             }
         case .failure(let error):
             loadError = error
             allShops = []
+            tagIdToTitle = [:]
         }
     }
 
@@ -114,11 +119,17 @@ final class SearchViewModel {
         }
     }
 
-    /// Matches term against shop title or any related tag (case-insensitive).
+    /// Matches term against shop title or any related tag title (case-insensitive).
     private func matchesShop(_ shop: ShopModel, with term: String) -> Bool {
         let matchesTitle = shop.title.localizedCaseInsensitiveContains(term)
-        let matchesTags = shop.tags?.contains { $0.localizedCaseInsensitiveContains(term) } ?? false
+        let tagTitles = tagTitles(for: shop)
+        let matchesTags = tagTitles.contains { $0.localizedCaseInsensitiveContains(term) }
         return matchesTitle || matchesTags
+    }
+
+    /// Resolved tag titles for a shop (tag IDs → titles using home response tags).
+    func tagTitles(for shop: ShopModel) -> [String] {
+        shop.tags?.compactMap { tagIdToTitle[$0] } ?? []
     }
 
     private func storeHistory(term: String) {
@@ -130,5 +141,14 @@ final class SearchViewModel {
 
     private func trimmedQuery(_ value: String) -> String {
         value.trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+
+    private func buildTagIdToTitle(from tags: [TagModel]?) -> [String: String] {
+        guard let tags else { return [:] }
+        return Dictionary(
+            uniqueKeysWithValues: tags.compactMap { tag in
+                tag.title.map { (tag.id, $0) }
+            }
+        )
     }
 }

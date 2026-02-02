@@ -180,9 +180,9 @@ struct SearchView: View {
     private func resultsList(@Bindable viewModel: SearchViewModel) -> some View {
         if viewModel.query.trimmingCharacters(in: .whitespacesAndNewlines).count >= 3 {
             ForEach(viewModel.results) { shop in
-                SearchResultRow(shop: shop)
+                SearchResultRow(shop: shop, tagTitles: viewModel.tagTitles(for: shop))
                 Divider()
-                    .padding(.leading, 76)
+                    .padding(.horizontal, 16)
             }
         }
     }
@@ -212,9 +212,10 @@ struct SearchView: View {
     }
 }
 
-/// Single row in search results: logo, title, and tags (vertical list item).
+/// Single row in search results: logo, title, and tag titles (vertical list item).
 private struct SearchResultRow: View {
     let shop: ShopModel
+    let tagTitles: [String]
 
     var body: some View {
         HStack(alignment: .top, spacing: 12) {
@@ -237,11 +238,11 @@ private struct SearchResultRow: View {
                     .typography(.subheading)
                     .foregroundStyle(.primary)
 
-                if let tags = shop.tags, !tags.isEmpty {
+                if !tagTitles.isEmpty {
                     ScrollView(.horizontal, showsIndicators: false) {
                         HStack(spacing: 6) {
-                            ForEach(tags, id: \.self) { tag in
-                                Text(tag)
+                            ForEach(tagTitles, id: \.self) { tagTitle in
+                                Text(tagTitle)
                                     .typography(.caption)
                                     .foregroundStyle(.secondary)
                                     .padding(.horizontal, 8)
