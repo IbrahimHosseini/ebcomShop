@@ -40,7 +40,7 @@ struct FAQSectionView: View {
             }
         }
         .padding(.vertical, 16)
-        .background(Color.clear)
+        .background(Color.background)
     }
 }
 
