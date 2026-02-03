@@ -190,8 +190,6 @@ struct SearchView: View {
         if viewModel.query.trimmingCharacters(in: .whitespacesAndNewlines).count >= 3 {
             ForEach(viewModel.results) { shop in
                 SearchResultRow(shop: shop, tagTitles: viewModel.tagTitles(for: shop))
-                Divider()
-                    .padding(.horizontal, 16)
             }
         }
     }
