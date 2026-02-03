@@ -33,9 +33,11 @@ struct FAQSectionView: View {
                         }
                     )
                     
-                    Divider()
-                        .foregroundStyle(Color.gray50)
-                        .padding(.horizontal, horizontalPadding)
+                    if index < faq.sections.count - 1 {
+                        Divider()
+                            .foregroundStyle(Color.gray50)
+                            .padding(.horizontal, horizontalPadding)
+                    }
                 }
             }
         }
