@@ -18,10 +18,21 @@ struct ShopSectionView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             if let title, !title.isEmpty {
-                Text(title)
-                    .typography(.title3)
-                    .foregroundStyle(Color(.label))
+                HStack {
+                    Text(title)
+                        .typography(.caption)
+                        .foregroundStyle(Color.black900)
+                        .padding(.horizontal, horizontalPadding)
+                    
+                    Spacer()
+                    
+                    Button("مشاهده همه") {
+                        // TODO: navigate to list view
+                    }
+                    .typography(.caption)
+                    .foregroundStyle(Color.greenPrimery)
                     .padding(.horizontal, horizontalPadding)
+                }
             }
 
             LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: spacing), count: columns), spacing: spacing) {

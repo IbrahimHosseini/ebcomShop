@@ -26,7 +26,7 @@ struct CategorySectionView: View {
                     Spacer()
                     
                     Button("مشاهده همه") {
-                        
+                        // TODO: navigate to list view
                     }
                     .typography(.caption)
                     .foregroundStyle(Color.greenPrimery)

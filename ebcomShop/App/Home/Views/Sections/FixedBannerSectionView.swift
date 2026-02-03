@@ -13,26 +13,33 @@ struct FixedBannerSectionView: View {
 
     private let horizontalPadding: CGFloat = 16
     private let spacing: CGFloat = 8
+    private let ratio: CGFloat = 0.792
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             if let title, !title.isEmpty {
                 Text(title)
-                    .typography(.title3)
-                    .foregroundStyle(Color(.label))
+                    .typography(.caption)
+                    .foregroundStyle(Color.black900)
                     .padding(.horizontal, horizontalPadding)
             }
 
+            
             let width = UIScreen.main.bounds.width - horizontalPadding * 2
             let halfWidth = (width - spacing) / 2
             let quarterWidth = (width - spacing * 3) / 4
-            let ratio: CGFloat = 0.5
+            
             let sectionHeight: CGFloat = {
                 switch items.count {
-                case 1: return width * ratio
-                case 2: return halfWidth * ratio
-                case 3: let h = halfWidth * ratio; return h * 2 + spacing
-                default: return (quarterWidth * ratio) * 2 + spacing
+                case 1:
+                    return width * ratio
+                case 2:
+                    return halfWidth * ratio
+                case 3:
+                    let height = halfWidth * ratio
+                    return height * 2 + spacing
+                default:
+                    return (quarterWidth * ratio) * 2 + spacing
                 }
             }()
 
@@ -59,13 +66,11 @@ struct FixedBannerSectionView: View {
 
     @ViewBuilder
     private func oneItemLayout(width: CGFloat) -> some View {
-        let ratio: CGFloat = 0.5
         FixedBannerImageView(imageUrl: items[0].imageUrl, width: width, height: width * ratio)
     }
 
     @ViewBuilder
     private func twoItemsLayout(halfWidth: CGFloat, width: CGFloat) -> some View {
-        let ratio: CGFloat = 0.5
         HStack(spacing: spacing) {
             FixedBannerImageView(imageUrl: items[0].imageUrl, width: halfWidth, height: halfWidth * ratio)
             FixedBannerImageView(imageUrl: items[1].imageUrl, width: halfWidth, height: halfWidth * ratio)
@@ -74,21 +79,19 @@ struct FixedBannerSectionView: View {
 
     @ViewBuilder
     private func threeItemsLayout(halfWidth: CGFloat, width: CGFloat) -> some View {
-        let ratio: CGFloat = 0.5
         let leftHeight = halfWidth * ratio
         let rightHeight = leftHeight * 2 + spacing
-        HStack(spacing: spacing) {
+        HStack(alignment: .top, spacing: spacing) {
+            FixedBannerImageView(imageUrl: items[0].imageUrl, width: halfWidth, height: rightHeight)
             VStack(spacing: spacing) {
                 FixedBannerImageView(imageUrl: items[1].imageUrl, width: halfWidth, height: leftHeight)
                 FixedBannerImageView(imageUrl: items[2].imageUrl, width: halfWidth, height: leftHeight)
             }
-            FixedBannerImageView(imageUrl: items[0].imageUrl, width: halfWidth, height: rightHeight)
         }
     }
 
     @ViewBuilder
     private func fourOrMoreItemsLayout(quarterWidth: CGFloat, width: CGFloat) -> some View {
-        let ratio: CGFloat = 0.5
         let rowHeight = quarterWidth * ratio
         VStack(spacing: spacing) {
             HStack(spacing: spacing) {
@@ -114,4 +117,13 @@ private struct FixedBannerImageView: View {
         BannerItemView(imageUrl: imageUrl, width: width)
             .frame(width: width, height: height)
     }
+}
+
+
+#Preview {
+    FixedBannerSectionView(title: "", items: [
+        BannerModel(id: "1", imageUrl: "http://185.204.197.213:5906/images/1.png"),
+        BannerModel(id: "2", imageUrl: "http://185.204.197.213:5906/images/2.png"),
+        BannerModel(id: "3", imageUrl: "http://185.204.197.213:5906/images/3.png"),
+    ])
 }
