@@ -35,3 +35,21 @@ struct ShopSectionView: View {
         .padding(.vertical, 8)
     }
 }
+
+#Preview {
+    ShopSectionView(
+        title: "Title",
+        items: [ShopModel(
+            id: "",
+            title: "دیجی کالا",
+            iconUrl: "https://static-ebcom.mci.ir/static/app/ewano/clients/fcf12143-adf5-4790-bbe3-63932b45de16.png",
+            labels: nil,
+            tags: nil,
+            categories: nil,
+            about: nil,
+            type: nil,
+            code: nil,
+            status: nil
+        )]
+    )
+}

@@ -108,8 +108,8 @@ struct TypographyStyle {
     )
 
     static let chipSemibold = TypographyStyle(
-        font: Font.custom(.medium, size: 14),
-        size: 14,
+        font: Font.custom(.medium, size: 12),
+        size: 12,
         lineHeight: 20
     )
 
