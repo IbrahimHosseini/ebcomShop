@@ -11,8 +11,8 @@ import SwiftUI
 struct CategoryItemView: View {
     let category: CategoryModel
 
-    private let itemWidth: CGFloat = 80
-    private let iconSize: CGFloat = 56
+    private let itemWidth: CGFloat = 72
+    private let iconSize: CGFloat = 50
 
     var body: some View {
         VStack(spacing: 8) {
@@ -21,15 +21,25 @@ struct CategoryItemView: View {
                 .resizable()
                 .scaledToFit()
                 .frame(width: iconSize, height: iconSize)
-                .clipShape(RoundedRectangle(cornerRadius: 12))
+                .clipShape(Circle())
 
             Text(category.title)
                 .typography(.caption)
                 .multilineTextAlignment(.center)
-                .lineLimit(2)
-                .minimumScaleFactor(0.8)
+                .lineLimit(1)
                 .frame(width: itemWidth)
         }
         .frame(width: itemWidth)
     }
+}
+
+#Preview {
+    CategoryItemView(
+        category: .init(
+            id: "",
+            title: "فروشگاه زنجیره‌ای",
+            iconUrl: "https://static-ebcom.mci.ir/static/app/ewano/shop/21f6357e-58c7-4240-98cc-e4f9344c59e5.png",
+            status: nil
+        )
+    )
 }
