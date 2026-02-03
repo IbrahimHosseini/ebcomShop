@@ -142,7 +142,7 @@ struct SearchView: View {
                 Spacer()
                 
                 Button {
-//                    viewModel.deleteHistory(term)
+                    viewModel.deleteHistory(viewModel.history)
                 } label: {
                     Image(.delete)
                         .typography(.caption2)

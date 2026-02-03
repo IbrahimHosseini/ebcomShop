@@ -90,8 +90,10 @@ final class SearchViewModel {
         onQueryChanged(term)
     }
 
-    func deleteHistory(_ term: String) {
-        try? searchHistoryRepository.delete(matching: term)
+    func deleteHistory(_ terms: [String]) {
+        for term in terms {
+            try? searchHistoryRepository.delete(matching: term)
+        }
         history = searchHistoryRepository.fetchTerms()
     }
 
