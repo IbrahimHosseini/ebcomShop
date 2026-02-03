@@ -17,17 +17,18 @@ struct BannerSectionView: View {
     var body: some View {
         GeometryReader { geo in
             let width = geo.size.width - horizontalPadding * 2
-            let height = width * aspectRatio
+            let itemWidth = width - 16
+            let height = itemWidth * aspectRatio
             VStack(spacing: 8) {
                 TabView(selection: $selectedIndex) {
                     ForEach(items.indices, id: \.self) { index in
                         let banner = items[index]
                         BannerItemView(
                             imageUrl: banner.imageUrl,
-                            width: width,
+                            width: itemWidth,
                             aspectRatio: $aspectRatio
                         )
-                        .frame(width: width, height: height)
+                        .frame(width: itemWidth, height: height)
                         .tag(index)
                     }
                 }
@@ -47,7 +48,7 @@ struct BannerSectionView: View {
             .padding(.horizontal, horizontalPadding)
             .padding(.vertical, 8)
         }
-        .frame(height: (UIScreen.main.bounds.width - horizontalPadding * 2) * aspectRatio + 28)
+        .frame(height: (UIScreen.main.bounds.width - horizontalPadding * 2 - 12) * aspectRatio + 28)
         .padding(.vertical, 8)
     }
 }
