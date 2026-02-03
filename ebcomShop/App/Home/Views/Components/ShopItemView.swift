@@ -10,10 +10,15 @@ import SwiftUI
 
 struct ShopItemView: View {
     let shop: ShopModel
-    private let containerSize: CGFloat = 56
-    private let logoSize: CGFloat = 32
+    let itemWidth: CGFloat
+    private let containerSizeRatio: CGFloat = 1.5
+    private let logoSizeRatio: CGFloat = 1.0
 
     var body: some View {
+        let resolvedWidth = itemWidth > 0 ? itemWidth : 56
+        let containerSize = max(0, floor(resolvedWidth * containerSizeRatio))
+        let logoSize = max(0, floor(resolvedWidth * logoSizeRatio))
+
         VStack(spacing: 6) {
             ZStack {
                 RoundedRectangle(cornerRadius: 12)
@@ -40,7 +45,8 @@ struct ShopItemView: View {
 }
 
 #Preview {
-    ShopItemView(shop: ShopModel(
+    ShopItemView(
+        shop: ShopModel(
         id: "",
         title: "دیجی کالا",
         iconUrl: "https://static-ebcom.mci.ir/static/app/ewano/clients/fcf12143-adf5-4790-bbe3-63932b45de16.png",
@@ -51,5 +57,7 @@ struct ShopItemView: View {
         type: nil,
         code: nil,
         status: nil
-    ))
+        ),
+        itemWidth: 80
+    )
 }

@@ -14,8 +14,12 @@ struct ShopSectionView: View {
     private let horizontalPadding: CGFloat = 16
     private let columns = 4
     private let spacing: CGFloat = 12
+    private let rows = 3
+    @State private var availableWidth: CGFloat = 0
 
     var body: some View {
+        let itemWidth = max(0, floor((availableWidth - (horizontalPadding * 2) - (spacing * CGFloat(columns - 1))) / CGFloat(columns)))
+
         VStack(alignment: .leading, spacing: 12) {
             if let title, !title.isEmpty {
                 HStack {
@@ -36,14 +40,34 @@ struct ShopSectionView: View {
             }
 
             LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: spacing), count: columns), spacing: spacing) {
-                ForEach(items) { shop in
-                    ShopItemView(shop: shop)
+                ForEach(items.prefix(rows * columns)) { shop in
+                    ShopItemView(shop: shop, itemWidth: itemWidth)
+                        .frame(maxWidth: .infinity)
                 }
             }
             .padding(.horizontal, horizontalPadding)
             .padding(.vertical, 8)
         }
         .padding(.vertical, 8)
+        .background(
+            GeometryReader { proxy in
+                Color.clear
+                    .preference(key: ShopSectionWidthKey.self, value: proxy.size.width)
+            }
+        )
+        .onPreferenceChange(ShopSectionWidthKey.self) { width in
+            if width != availableWidth {
+                availableWidth = width
+            }
+        }
+    }
+}
+
+private struct ShopSectionWidthKey: PreferenceKey {
+    static var defaultValue: CGFloat = 0
+
+    static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
+        value = nextValue()
     }
 }
 
