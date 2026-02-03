@@ -134,24 +134,6 @@ struct SearchView: View {
     @ViewBuilder
     private func historySection(@Bindable viewModel: SearchViewModel) -> some View {
         if !viewModel.history.isEmpty {
-            
-            HStack {
-                Text("جستجو های اخیر")
-                    .typography(.headline)
-                
-                Spacer()
-                
-                Button {
-//                    viewModel.deleteHistory(viewModel)
-                } label: {
-                    Image(.delete)
-                        .typography(.caption2)
-                        .foregroundStyle(.gray400)
-                }
-                .buttonStyle(.plain)
-            }
-            .padding(16)
-            
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 8) {
                     ForEach(viewModel.history, id: \.self) { term in
@@ -165,24 +147,32 @@ struct SearchView: View {
     }
 
     private func historyChip(term: String, viewModel: SearchViewModel) -> some View {
-        HStack {
+        HStack(spacing: 6) {
             Button {
                 viewModel.applyHistory(term)
             } label: {
-                Image(.resent)
                 Text(term)
                     .typography(.chip)
                     .foregroundStyle(.primary)
             }
             .buttonStyle(.plain)
+
+            Button {
+                viewModel.deleteHistory(term)
+            } label: {
+                Image(.delete)
+                    .typography(.caption2)
+                    .foregroundStyle(.gray400)
+            }
+            .buttonStyle(.plain)
         }
-        .padding(.horizontal, 16)
-        .padding(.vertical, 8)
-        .background(Color(.background))
-        .clipShape(RoundedRectangle(cornerRadius: 20))
+        .padding(.horizontal, 10)
+        .padding(.vertical, 6)
+        .background(Color(.systemBackground))
+        .clipShape(RoundedRectangle(cornerRadius: 16))
         .overlay(
-            RoundedRectangle(cornerRadius: 20)
-                .stroke(.gray50, lineWidth: 1)
+            RoundedRectangle(cornerRadius: 16)
+                .stroke(.gray200, lineWidth: 1)
         )
     }
 
@@ -191,10 +181,9 @@ struct SearchView: View {
     private func resultsList(@Bindable viewModel: SearchViewModel) -> some View {
         if viewModel.query.trimmingCharacters(in: .whitespacesAndNewlines).count >= 3 {
             ForEach(viewModel.results) { shop in
-                SearchResultRow(
-                    shop: shop,
-                    tagTitles: viewModel.tagTitles(for: shop)
-                )
+                SearchResultRow(shop: shop, tagTitles: viewModel.tagTitles(for: shop))
+                Divider()
+                    .padding(.horizontal, 16)
             }
         }
     }
@@ -230,62 +219,44 @@ private struct SearchResultRow: View {
     let tagTitles: [String]
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            HStack {
-                KFImage(URL(string: shop.iconUrl))
-                    .placeholder { ProgressView() }
-                    .fade(duration: 0.25)
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 24, height: 24)
-                    .clipShape(Circle())
-                
+        HStack(alignment: .top, spacing: 12) {
+            KFImage(URL(string: shop.iconUrl))
+                .placeholder { ProgressView() }
+                .fade(duration: 0.25)
+                .resizable()
+                .scaledToFit()
+                .frame(width: 24, height: 24)
+                .clipShape(RoundedRectangle(cornerRadius: 10))
+
+            VStack(alignment: .leading, spacing: 6) {
                 Text(shop.title)
                     .typography(.subheading)
                     .foregroundStyle(.primary)
-                
-                Spacer()
-                
-                Image(.openArrow)
-            }
-                
-            if !tagTitles.isEmpty {
-                ScrollView(.horizontal, showsIndicators: false) {
-                    HStack(spacing: 6) {
-                        ForEach(tagTitles, id: \.self) { tagTitle in
-                            Text(tagTitle)
-                                .typography(.caption)
-                                .foregroundStyle(.secondary)
-                                .padding(.horizontal, 8)
-                                .padding(.vertical, 4)
-                                .background(Color(.systemGray6))
-                                .clipShape(RoundedRectangle(cornerRadius: 6))
+
+                if !tagTitles.isEmpty {
+                    ScrollView(.horizontal, showsIndicators: false) {
+                        HStack(spacing: 6) {
+                            ForEach(tagTitles, id: \.self) { tagTitle in
+                                Text(tagTitle)
+                                    .typography(.caption)
+                                    .foregroundStyle(.secondary)
+                                    .padding(.horizontal, 8)
+                                    .padding(.vertical, 4)
+                                    .background(Color(.systemGray6))
+                                    .clipShape(RoundedRectangle(cornerRadius: 10))
+                            }
                         }
                     }
                 }
             }
-            
             Spacer(minLength: 0)
         }
-        .padding(16)
+        .padding(.horizontal, 16)
+        .padding(.vertical, 12)
     }
 }
 
 #Preview {
-    SearchResultRow(
-        shop: .init(
-            id: "",
-            title: "تکنولایف",
-            iconUrl: "https://static-ebcom.mci.ir/static/app/ewano/clients/fcf12143-adf5-4790-bbe3-63932b45de16.png",
-            labels: nil,
-            tags: nil,
-            categories: nil,
-            about: nil,
-            type: nil,
-            code: nil,
-            status: nil
-        ),
-        tagTitles: ["sss", "eee", "ddd", "aaa"]
-    )
+    SearchView()
         .environment(\.homeService, HomeServiceImpl())
 }
