@@ -124,7 +124,7 @@ struct SearchView: View {
         .clipShape(RoundedRectangle(cornerRadius: 6))
         .overlay(
             RoundedRectangle(cornerRadius: 6)
-                .stroke(.gray200, lineWidth: 1)
+                .stroke(.greenPrimery, lineWidth: 1)
         )
         .padding(.horizontal, 16)
         .padding(.top, 8)
