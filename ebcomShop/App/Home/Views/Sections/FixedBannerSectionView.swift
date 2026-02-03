@@ -49,11 +49,11 @@ struct FixedBannerSectionView: View {
                     case 1:
                         oneItemLayout(width: availableWidth)
                     case 2:
-                        twoItemsLayout(halfWidth: halfWidth, width: availableWidth)
+                        twoItemsLayout(halfWidth: halfWidth)
                     case 3:
-                        threeItemsLayout(halfWidth: halfWidth, width: availableWidth)
+                        threeItemsLayout(halfWidth: halfWidth)
                     case 4:
-                        fourOrMoreItemsLayout(halfWidth: halfWidth, width: availableWidth)
+                        fourOrMoreItemsLayout(halfWidth: halfWidth)
                     default:
                         EmptyView()
                     }
@@ -66,7 +66,7 @@ struct FixedBannerSectionView: View {
             .padding(.vertical, 8)
             .frame(width: geometry.size.width, height: nil, alignment: .topLeading)
         }
-        .frame(maxWidth: .infinity, minHeight: 200)
+        .frame(maxWidth: .infinity, minHeight: 390)
     }
 
     @ViewBuilder
@@ -75,7 +75,7 @@ struct FixedBannerSectionView: View {
     }
 
     @ViewBuilder
-    private func twoItemsLayout(halfWidth: CGFloat, width: CGFloat) -> some View {
+    private func twoItemsLayout(halfWidth: CGFloat) -> some View {
         HStack(spacing: spacing) {
             FixedBannerImageView(imageUrl: items[0].imageUrl, width: halfWidth, height: halfWidth * ratio)
             FixedBannerImageView(imageUrl: items[1].imageUrl, width: halfWidth, height: halfWidth * ratio)
@@ -83,7 +83,7 @@ struct FixedBannerSectionView: View {
     }
 
     @ViewBuilder
-    private func threeItemsLayout(halfWidth: CGFloat, width: CGFloat) -> some View {
+    private func threeItemsLayout(halfWidth: CGFloat) -> some View {
         let smallHeight = halfWidth * ratio
         let largeHeight = smallHeight * 2 + spacing
         HStack(alignment: .top, spacing: spacing) {
@@ -97,7 +97,7 @@ struct FixedBannerSectionView: View {
 
     /// 2×2 grid: full-width rows, two columns per row.
     @ViewBuilder
-    private func fourOrMoreItemsLayout(halfWidth: CGFloat, width: CGFloat) -> some View {
+    private func fourOrMoreItemsLayout(halfWidth: CGFloat) -> some View {
         let rowHeight = halfWidth * ratio
         VStack(spacing: spacing) {
             HStack(spacing: spacing) {

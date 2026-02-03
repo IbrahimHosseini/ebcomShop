@@ -16,11 +16,11 @@ struct FAQSectionView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             Text(faq.title)
-                .typography(.title3)
-                .foregroundStyle(Color(.label))
+                .typography(.faqTitle)
+                .foregroundStyle(Color.black900)
                 .padding(.horizontal, horizontalPadding)
 
-            VStack(spacing: 8) {
+            VStack(spacing: 0) {
                 ForEach(Array(faq.sections.enumerated()), id: \.offset) { index, section in
                     FAQRowView(
                         title: section.title,
@@ -32,10 +32,33 @@ struct FAQSectionView: View {
                             }
                         }
                     )
+                    
+                    Divider()
+                        .foregroundStyle(Color.gray50)
+                        .padding(.horizontal, horizontalPadding)
                 }
             }
-            .padding(.horizontal, horizontalPadding)
         }
         .padding(.vertical, 16)
+        .background(Color.clear)
     }
+}
+
+
+#Preview {
+    FAQSectionView(
+        faq: FAQPayload(
+            id: "1",
+            title: "سوال برات پیش می‌آید",
+            sections: [
+                FAQSectionItem(title: "سوال ۱", description: "چواب ۱"),
+                FAQSectionItem(title: "سوال ۲", description: "چواب ۲"),
+                FAQSectionItem(title: "سوال ۳", description: "چواب ۳"),
+                FAQSectionItem(title: "سوال ۴", description: "چواب ۴"),
+                FAQSectionItem(title: "سوال ۵", description: "چواب ۵"),
+                FAQSectionItem(title: "سوال ۶", description: "چواب ۶"),
+            ]
+        )
+    )
+    .background(Color.red)
 }

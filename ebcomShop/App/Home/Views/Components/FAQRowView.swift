@@ -18,13 +18,11 @@ struct FAQRowView: View {
             Button(action: onTap) {
                 HStack {
                     Text(title)
-                        .typography(.callout)
+                        .typography(.footnote)
                         .multilineTextAlignment(.leading)
-                        .foregroundStyle(Color(.label))
+                        .foregroundStyle(Color.black900)
                     Spacer()
-                    Image(systemName: isExpanded ? "chevron.up" : "chevron.down")
-                        .font(.caption.weight(.medium))
-                        .foregroundStyle(Color(.secondaryLabel))
+                    Image(isExpanded ? .arrowUp : .arrowDown)
                 }
                 .padding(.vertical, 12)
                 .padding(.horizontal, 16)
@@ -39,7 +37,6 @@ struct FAQRowView: View {
                     .padding(.bottom, 12)
             }
         }
-        .background(Color(.secondarySystemGroupedBackground))
-        .clipShape(RoundedRectangle(cornerRadius: 12))
+        .background(Color.background)
     }
 }

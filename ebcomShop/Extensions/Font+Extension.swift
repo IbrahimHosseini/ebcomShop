@@ -67,7 +67,7 @@ struct TypographyStyle {
 
     static let footnote = TypographyStyle(
         font: Font.custom(.regular, size: 13),
-        size: 13,
+        size: 12,
         lineHeight: 18
     )
 
@@ -129,6 +129,12 @@ struct TypographyStyle {
         font: Font.custom(.medium, size: 13),
         size: 13,
         lineHeight: 18
+    )
+    
+    static let faqTitle = TypographyStyle(
+        font: Font.custom(.bold, size: 12),
+        size: 12,
+        lineHeight: 16
     )
 
     static let tabbar = TypographyStyle(
