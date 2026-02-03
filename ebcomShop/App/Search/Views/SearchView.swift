@@ -134,6 +134,24 @@ struct SearchView: View {
     @ViewBuilder
     private func historySection(@Bindable viewModel: SearchViewModel) -> some View {
         if !viewModel.history.isEmpty {
+            
+            HStack {
+                Text("جستجو های اخیر")
+                    .typography(.headline)
+                
+                Spacer()
+                
+                Button {
+//                    viewModel.deleteHistory(term)
+                } label: {
+                    Image(.delete)
+                        .typography(.caption2)
+                        .foregroundStyle(.gray400)
+                }
+                .buttonStyle(.plain)
+            }
+            .padding(16)
+            
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 8) {
                     ForEach(viewModel.history, id: \.self) { term in
@@ -157,15 +175,6 @@ struct SearchView: View {
                     .foregroundStyle(.primary)
             }
             .buttonStyle(.plain)
-
-//            Button {
-//                viewModel.deleteHistory(term)
-//            } label: {
-//                Image(.delete)
-//                    .typography(.caption2)
-//                    .foregroundStyle(.gray400)
-//            }
-//            .buttonStyle(.plain)
         }
         .padding(.horizontal, 16)
         .padding(.vertical, 8)
