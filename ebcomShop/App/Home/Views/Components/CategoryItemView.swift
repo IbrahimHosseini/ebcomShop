@@ -21,7 +21,12 @@ struct CategoryItemView: View {
                 .resizable()
                 .scaledToFit()
                 .frame(width: iconSize, height: iconSize)
-                .clipShape(Circle())
+                .padding(10)
+                .background(
+                    Circle()
+                        .fill(Color.categoryBackground)
+                        .stroke(Color.categoryBorder, style: .init(lineWidth: 1))
+                )
 
             Text(category.title)
                 .typography(.caption)
