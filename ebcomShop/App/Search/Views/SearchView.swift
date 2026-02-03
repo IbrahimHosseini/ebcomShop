@@ -151,28 +151,29 @@ struct SearchView: View {
             Button {
                 viewModel.applyHistory(term)
             } label: {
+                Image(.resent)
                 Text(term)
                     .typography(.chip)
                     .foregroundStyle(.primary)
             }
             .buttonStyle(.plain)
 
-            Button {
-                viewModel.deleteHistory(term)
-            } label: {
-                Image(.delete)
-                    .typography(.caption2)
-                    .foregroundStyle(.gray400)
-            }
-            .buttonStyle(.plain)
+//            Button {
+//                viewModel.deleteHistory(term)
+//            } label: {
+//                Image(.delete)
+//                    .typography(.caption2)
+//                    .foregroundStyle(.gray400)
+//            }
+//            .buttonStyle(.plain)
         }
-        .padding(.horizontal, 10)
-        .padding(.vertical, 6)
-        .background(Color(.systemBackground))
-        .clipShape(RoundedRectangle(cornerRadius: 16))
+        .padding(.horizontal, 16)
+        .padding(.vertical, 8)
+        .background(Color(.background))
+        .clipShape(RoundedRectangle(cornerRadius: 20))
         .overlay(
-            RoundedRectangle(cornerRadius: 16)
-                .stroke(.gray200, lineWidth: 1)
+            RoundedRectangle(cornerRadius: 20)
+                .stroke(.gray50, lineWidth: 1)
         )
     }
 
