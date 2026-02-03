@@ -5,6 +5,7 @@
 //  Created by Ibrahim on 2026-02-02.
 //
 
+import Kingfisher
 import SwiftUI
 
 struct FixedBannerSectionView: View {
@@ -36,8 +37,8 @@ struct FixedBannerSectionView: View {
                 case 2:
                     return halfWidth * ratio
                 case 3:
-                    let height = halfWidth * ratio
-                    return height * 2 + spacing
+                    let smallHeight = halfWidth * ratio
+                    return smallHeight * 2 + spacing
                 default:
                     return (quarterWidth * ratio) * 2 + spacing
                 }
@@ -79,13 +80,13 @@ struct FixedBannerSectionView: View {
 
     @ViewBuilder
     private func threeItemsLayout(halfWidth: CGFloat, width: CGFloat) -> some View {
-        let leftHeight = halfWidth * ratio
-        let rightHeight = leftHeight * 2 + spacing
+        let smallHeight = halfWidth * ratio
+        let largeHeight = smallHeight * 2 + spacing
         HStack(alignment: .top, spacing: spacing) {
-            FixedBannerImageView(imageUrl: items[0].imageUrl, width: halfWidth, height: rightHeight)
+            FixedBannerImageView(imageUrl: items[0].imageUrl, width: halfWidth, height: largeHeight)
             VStack(spacing: spacing) {
-                FixedBannerImageView(imageUrl: items[1].imageUrl, width: halfWidth, height: leftHeight)
-                FixedBannerImageView(imageUrl: items[2].imageUrl, width: halfWidth, height: leftHeight)
+                FixedBannerImageView(imageUrl: items[1].imageUrl, width: halfWidth, height: smallHeight)
+                FixedBannerImageView(imageUrl: items[2].imageUrl, width: halfWidth, height: smallHeight)
             }
         }
     }
@@ -114,16 +115,20 @@ private struct FixedBannerImageView: View {
     let height: CGFloat
 
     var body: some View {
-        BannerItemView(imageUrl: imageUrl, width: width)
+        KFImage(URL(string: imageUrl))
+            .placeholder { ProgressView() }
+            .resizable()
+            .scaledToFill()
             .frame(width: width, height: height)
+            .clipped()
     }
 }
 
 
 #Preview {
     FixedBannerSectionView(title: "", items: [
-        BannerModel(id: "1", imageUrl: "http://185.204.197.213:5906/images/1.png"),
-        BannerModel(id: "2", imageUrl: "http://185.204.197.213:5906/images/2.png"),
-        BannerModel(id: "3", imageUrl: "http://185.204.197.213:5906/images/3.png"),
+//        BannerModel(id: "12", imageUrl: "http://185.204.197.213:5906/images/1.png"),
+        BannerModel(id: "22", imageUrl: "http://185.204.197.213:5906/images/2.png"),
+        BannerModel(id: "32", imageUrl: "http://185.204.197.213:5906/images/3.png")
     ])
 }
