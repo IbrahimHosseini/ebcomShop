@@ -74,12 +74,22 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		0F45795F2F31FE7E000AA4D0 /* Recovered References */ = {
+			isa = PBXGroup;
+			children = (
+				0F49D1012F30EC0800CA3B4C /* debug.xcconfig */,
+				0F49D1022F30EC0800CA3B4C /* release.xcconfig */,
+			);
+			name = "Recovered References";
+			sourceTree = "<group>";
+		};
 		0F49CE9C2F30EC0800CA3B4C = {
 			isa = PBXGroup;
 			children = (
 				0F49CEA72F30EC0800CA3B4C /* ebcomShop */,
 				0F49CEB72F30EC0A00CA3B4C /* ebcomShopTests */,
 				0F49CEA62F30EC0800CA3B4C /* Products */,
+				0F45795F2F31FE7E000AA4D0 /* Recovered References */,
 			);
 			sourceTree = "<group>";
 		};
@@ -228,7 +238,8 @@
 /* Begin XCBuildConfiguration section */
 		0F49CEC62F30EC0A00CA3B4C /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 0F49D1012F30EC0800CA3B4C /* debug.xcconfig */;
+			baseConfigurationReferenceAnchor = 0F49CEA72F30EC0800CA3B4C /* ebcomShop */;
+			baseConfigurationReferenceRelativePath = Configs/debug.xcconfig;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -293,7 +304,8 @@
 		};
 		0F49CEC72F30EC0A00CA3B4C /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 0F49D1022F30EC0800CA3B4C /* release.xcconfig */;
+			baseConfigurationReferenceAnchor = 0F49CEA72F30EC0800CA3B4C /* ebcomShop */;
+			baseConfigurationReferenceRelativePath = Configs/release.xcconfig;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;

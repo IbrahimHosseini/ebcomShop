@@ -17,52 +17,56 @@ struct FixedBannerSectionView: View {
     private let ratio: CGFloat = 0.792
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            if let title, !title.isEmpty {
-                Text(title)
-                    .typography(.caption)
-                    .foregroundStyle(Color.black900)
-                    .padding(.horizontal, horizontalPadding)
-            }
+        GeometryReader { geometry in
+            let availableWidth = max(0, geometry.size.width - horizontalPadding * 2)
+            let halfWidth = (availableWidth - spacing) / 2
 
-            
-            let width = UIScreen.main.bounds.width - horizontalPadding * 2
-            let halfWidth = (width - spacing) / 2
-            let quarterWidth = (width - spacing * 3) / 4
-            
             let sectionHeight: CGFloat = {
                 switch items.count {
                 case 1:
-                    return width * ratio
+                    return availableWidth * ratio
                 case 2:
                     return halfWidth * ratio
                 case 3:
                     let smallHeight = halfWidth * ratio
                     return smallHeight * 2 + spacing
                 default:
-                    return (quarterWidth * ratio) * 2 + spacing
+                    let rowHeight = halfWidth * ratio
+                    return rowHeight * 2 + spacing
                 }
             }()
 
-            Group {
-                switch items.count {
-                case 1:
-                    oneItemLayout(width: width)
-                case 2:
-                    twoItemsLayout(halfWidth: halfWidth, width: width)
-                case 3:
-                    threeItemsLayout(halfWidth: halfWidth, width: width)
-                case 4...:
-                    fourOrMoreItemsLayout(quarterWidth: quarterWidth, width: width)
-                default:
-                    EmptyView()
+            VStack(alignment: .leading, spacing: 12) {
+                if let title, !title.isEmpty {
+                    Text(title)
+                        .typography(.caption)
+                        .foregroundStyle(Color.black900)
+                        .padding(.horizontal, horizontalPadding)
                 }
+
+                Group {
+                    switch items.count {
+                    case 1:
+                        oneItemLayout(width: availableWidth)
+                    case 2:
+                        twoItemsLayout(halfWidth: halfWidth, width: availableWidth)
+                    case 3:
+                        threeItemsLayout(halfWidth: halfWidth, width: availableWidth)
+                    case 4:
+                        fourOrMoreItemsLayout(halfWidth: halfWidth, width: availableWidth)
+                    default:
+                        EmptyView()
+                    }
+                }
+                .frame(maxWidth: .infinity)
+                .frame(height: sectionHeight)
+                .padding(.horizontal, horizontalPadding)
+                .padding(.vertical, 8)
             }
-            .frame(height: sectionHeight)
-            .padding(.horizontal, horizontalPadding)
             .padding(.vertical, 8)
+            .frame(width: geometry.size.width, height: nil, alignment: .topLeading)
         }
-        .padding(.vertical, 8)
+        .frame(maxWidth: .infinity, minHeight: 200)
     }
 
     @ViewBuilder
@@ -91,21 +95,25 @@ struct FixedBannerSectionView: View {
         }
     }
 
+    /// 2×2 grid: full-width rows, two columns per row.
     @ViewBuilder
-    private func fourOrMoreItemsLayout(quarterWidth: CGFloat, width: CGFloat) -> some View {
-        let rowHeight = quarterWidth * ratio
+    private func fourOrMoreItemsLayout(halfWidth: CGFloat, width: CGFloat) -> some View {
+        let rowHeight = halfWidth * ratio
         VStack(spacing: spacing) {
             HStack(spacing: spacing) {
                 ForEach(Array(items.prefix(2).enumerated()), id: \.offset) { _, banner in
-                    FixedBannerImageView(imageUrl: banner.imageUrl, width: quarterWidth, height: rowHeight)
+                    FixedBannerImageView(imageUrl: banner.imageUrl, width: halfWidth, height: rowHeight)
                 }
             }
+            .frame(maxWidth: .infinity, alignment: .leading)
             HStack(spacing: spacing) {
                 ForEach(Array(items.dropFirst(2).prefix(2).enumerated()), id: \.offset) { _, banner in
-                    FixedBannerImageView(imageUrl: banner.imageUrl, width: quarterWidth, height: rowHeight)
+                    FixedBannerImageView(imageUrl: banner.imageUrl, width: halfWidth, height: rowHeight)
                 }
             }
+            .frame(maxWidth: .infinity, alignment: .leading)
         }
+        .frame(maxWidth: .infinity)
     }
 }
 
@@ -126,9 +134,12 @@ private struct FixedBannerImageView: View {
 
 
 #Preview {
-    FixedBannerSectionView(title: "", items: [
+    FixedBannerSectionView(title: "برنامه یلدایی", items: [
 //        BannerModel(id: "12", imageUrl: "http://185.204.197.213:5906/images/1.png"),
+        BannerModel(id: "142", imageUrl: "http://185.204.197.213:5906/images/1.png"),
         BannerModel(id: "22", imageUrl: "http://185.204.197.213:5906/images/2.png"),
-        BannerModel(id: "32", imageUrl: "http://185.204.197.213:5906/images/3.png")
+        BannerModel(id: "32", imageUrl: "http://185.204.197.213:5906/images/3.png"),
+//        BannerModel(id: "33", imageUrl: "http://185.204.197.213:5906/images/2.png"),
+//        BannerModel(id: "34", imageUrl: "http://185.204.197.213:5906/images/3.png"),
     ])
 }
