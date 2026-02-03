@@ -188,6 +188,9 @@ struct SearchView: View {
     @ViewBuilder
     private func resultsList(@Bindable viewModel: SearchViewModel) -> some View {
         if viewModel.query.trimmingCharacters(in: .whitespacesAndNewlines).count >= 3 {
+            
+            searchTextTitle
+            
             ForEach(viewModel.results) { shop in
                 SearchResultRow(shop: shop, tagTitles: viewModel.tagTitles(for: shop))
             }
@@ -196,14 +199,27 @@ struct SearchView: View {
 
     private var emptyStateView: some View {
         VStack(spacing: 8) {
-            Text("نتیجه‌ای یافت نشد")
+            searchTextTitle
+            
+            Spacer()
+            Text("نتیجه‌ای یافت نشد!")
                 .typography(.headline)
-            Text("نتیجه‌ای برای جستجوی شما پیدا نکردیم.")
-                .typography(.footnote)
-                .foregroundStyle(.secondary)
+                .padding(.top, 48)
+            Spacer()
         }
         .frame(maxWidth: .infinity)
-        .padding(.vertical, 48)
+    }
+    
+    private var searchTextTitle: some View {
+        HStack(spacing: 8) {
+            Image(.search2)
+            Text("جستجو برای '\(viewModel?.query ?? "")' ")
+                .typography(.headline)
+            Spacer()
+        }
+        .frame(maxWidth: .infinity)
+        .padding(.horizontal, 16)
+        .padding(.bottom, 16)
     }
 
     private var errorView: some View {
