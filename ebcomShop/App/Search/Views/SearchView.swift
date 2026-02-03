@@ -225,32 +225,39 @@ private struct SearchResultRow: View {
     let tagTitles: [String]
 
     var body: some View {
-        HStack(alignment: .top, spacing: 12) {
-            KFImage(URL(string: shop.iconUrl))
-                .placeholder { ProgressView() }
-                .fade(duration: 0.25)
-                .resizable()
-                .scaledToFit()
-                .frame(width: 24, height: 24)
-                .clipShape(RoundedRectangle(cornerRadius: 10))
-
-            VStack(alignment: .leading, spacing: 6) {
+        VStack(alignment: .leading, spacing: 12) {
+            
+            HStack {
+                
+                KFImage(URL(string: shop.iconUrl))
+                    .placeholder { ProgressView() }
+                    .fade(duration: 0.25)
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 24, height: 24)
+                    .clipShape(RoundedRectangle(cornerRadius: 10))
+                
                 Text(shop.title)
                     .typography(.subheading)
                     .foregroundStyle(.primary)
+                
+                Spacer()
+                
+                Image(.openArrow)
+            }
+                
 
-                if !tagTitles.isEmpty {
-                    ScrollView(.horizontal, showsIndicators: false) {
-                        HStack(spacing: 6) {
-                            ForEach(tagTitles, id: \.self) { tagTitle in
-                                Text(tagTitle)
-                                    .typography(.caption)
-                                    .foregroundStyle(.secondary)
-                                    .padding(.horizontal, 8)
-                                    .padding(.vertical, 4)
-                                    .background(Color(.systemGray6))
-                                    .clipShape(RoundedRectangle(cornerRadius: 10))
-                            }
+            if !tagTitles.isEmpty {
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(spacing: 6) {
+                        ForEach(tagTitles, id: \.self) { tagTitle in
+                            Text(tagTitle)
+                                .typography(.caption)
+                                .foregroundStyle(.secondary)
+                                .padding(.horizontal, 8)
+                                .padding(.vertical, 4)
+                                .background(Color(.systemGray6))
+                                .clipShape(RoundedRectangle(cornerRadius: 10))
                         }
                     }
                 }
