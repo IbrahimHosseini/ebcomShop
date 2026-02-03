@@ -10,20 +10,25 @@ import SwiftUI
 
 struct ShopItemView: View {
     let shop: ShopModel
+    private let containerSize: CGFloat = 56
+    private let logoSize: CGFloat = 32
 
     var body: some View {
         VStack(spacing: 6) {
-            KFImage(URL(string: shop.iconUrl))
-                .placeholder { ProgressView() }
-                .resizable()
-                .scaledToFit()
-                .frame(width: 50, height: 50)
-                .background(
-                    RoundedRectangle(cornerRadius: 12)
-                        .fill(Color.categoryBackground)
-                        .stroke(Color.categoryBorder, style: .init(lineWidth: 1))
-                )
-                
+            ZStack {
+                RoundedRectangle(cornerRadius: 12)
+                    .fill(Color.white100)
+                    .stroke(.gray50, lineWidth: 1)
+                    
+
+                KFImage(URL(string: shop.iconUrl))
+                    .placeholder { ProgressView() }
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: logoSize, height: logoSize)
+            }
+            .frame(width: containerSize, height: containerSize)
+
 
             Text(shop.title)
                 .typography(.chipSemibold)
