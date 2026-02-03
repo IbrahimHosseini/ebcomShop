@@ -15,58 +15,63 @@ struct FixedBannerSectionView: View {
     private let horizontalPadding: CGFloat = 16
     private let spacing: CGFloat = 8
     private let ratio: CGFloat = 0.792
+    @State private var containerWidth: CGFloat = UIScreen.main.bounds.width
 
     var body: some View {
-        GeometryReader { geometry in
-            let availableWidth = max(0, geometry.size.width - horizontalPadding * 2)
-            let halfWidth = (availableWidth - spacing) / 2
+        let availableWidth = max(0, containerWidth - horizontalPadding * 2)
+        let halfWidth = (availableWidth - spacing) / 2
 
-            let sectionHeight: CGFloat = {
+        let sectionHeight: CGFloat = {
+            switch items.count {
+            case 1:
+                return availableWidth * ratio
+            case 2:
+                return halfWidth * ratio
+            case 3:
+                let smallHeight = halfWidth * ratio
+                return smallHeight * 2 + spacing
+            default:
+                let rowHeight = halfWidth * ratio
+                return rowHeight * 2 + spacing
+            }
+        }()
+
+        VStack(alignment: .leading, spacing: 12) {
+            if let title, !title.isEmpty {
+                Text(title)
+                    .typography(.caption)
+                    .foregroundStyle(Color.black900)
+                    .padding(.horizontal, horizontalPadding)
+            }
+
+            Group {
                 switch items.count {
                 case 1:
-                    return availableWidth * ratio
+                    oneItemLayout(width: availableWidth)
                 case 2:
-                    return halfWidth * ratio
+                    twoItemsLayout(halfWidth: halfWidth)
                 case 3:
-                    let smallHeight = halfWidth * ratio
-                    return smallHeight * 2 + spacing
+                    threeItemsLayout(halfWidth: halfWidth)
+                case 4:
+                    fourOrMoreItemsLayout(halfWidth: halfWidth)
                 default:
-                    let rowHeight = halfWidth * ratio
-                    return rowHeight * 2 + spacing
+                    EmptyView()
                 }
-            }()
-
-            VStack(alignment: .leading, spacing: 12) {
-                if let title, !title.isEmpty {
-                    Text(title)
-                        .typography(.caption)
-                        .foregroundStyle(Color.black900)
-                        .padding(.horizontal, horizontalPadding)
-                }
-
-                Group {
-                    switch items.count {
-                    case 1:
-                        oneItemLayout(width: availableWidth)
-                    case 2:
-                        twoItemsLayout(halfWidth: halfWidth)
-                    case 3:
-                        threeItemsLayout(halfWidth: halfWidth)
-                    case 4:
-                        fourOrMoreItemsLayout(halfWidth: halfWidth)
-                    default:
-                        EmptyView()
-                    }
-                }
-                .frame(maxWidth: .infinity)
-                .frame(height: sectionHeight)
-                .padding(.horizontal, horizontalPadding)
-                .padding(.vertical, 8)
             }
+            .frame(maxWidth: .infinity)
+            .frame(height: sectionHeight)
+            .padding(.horizontal, horizontalPadding)
             .padding(.vertical, 8)
-            .frame(width: geometry.size.width, height: nil, alignment: .topLeading)
         }
-        .frame(maxWidth: .infinity, minHeight: 390)
+        .padding(.vertical, 8)
+        .frame(maxWidth: .infinity, alignment: .topLeading)
+        .background(
+            GeometryReader { geometry in
+                Color.clear
+                    .onAppear { containerWidth = geometry.size.width }
+                    .onChange(of: geometry.size.width) { containerWidth = $0 }
+            }
+        )
     }
 
     @ViewBuilder
