@@ -15,13 +15,18 @@ struct CategoryItemView: View {
 
     var body: some View {
         VStack(spacing: 8) {
-            AppImageView(url: category.iconUrl, width: iconSize, height: iconSize, cornerRadius: nil)
-                .padding(10)
-                .background(
-                    Circle()
-                        .fill(Color.categoryBackground)
-                        .stroke(Color.categoryBorder, style: .init(lineWidth: 1))
-                )
+            AppImageView(
+                url: category.iconUrl,
+                width: iconSize,
+                height: iconSize,
+                cornerRadius: 0
+            )
+            .padding(10)
+            .background(
+                Circle()
+                    .fill(Color.categoryBackground)
+                    .stroke(Color.categoryBorder, style: .init(lineWidth: 1))
+            )
 
             Text(category.title)
                 .typography(.caption)

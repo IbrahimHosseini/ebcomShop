@@ -250,13 +250,7 @@ private struct SearchResultRow: View {
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack(spacing: 6) {
                         ForEach(tagTitles, id: \.self) { tagTitle in
-                            Text(tagTitle)
-                                .typography(.caption)
-                                .foregroundStyle(.secondary)
-                                .padding(.horizontal, 8)
-                                .padding(.vertical, 4)
-                                .background(Color.gray500)
-                                .clipShape(RoundedRectangle(cornerRadius: 10))
+                            TagView(title: tagTitle)
                         }
                     }
                 }

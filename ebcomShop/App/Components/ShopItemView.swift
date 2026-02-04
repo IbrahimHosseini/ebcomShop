@@ -27,11 +27,11 @@ struct ShopItemView: View {
         VStack(spacing: 6) {
             ZStack {
                 RoundedRectangle(cornerRadius: 12)
-                    .fill(Color.white100)
+                    .fill(Color.grayDeactive)
                     .stroke(.gray50, lineWidth: 1)
                     
 
-                AppImageView(url: shop.iconUrl, width: logoSize, height: logoSize, cornerRadius: nil)
+                AppImageView(url: shop.iconUrl, width: logoSize, height: logoSize, cornerRadius: 0)
             }
             .frame(width: containerSize, height: containerSize)
 

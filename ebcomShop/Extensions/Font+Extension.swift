@@ -52,6 +52,12 @@ struct TypographyStyle {
         size: 11,
         lineHeight: 14
     )
+    
+    static let badge = TypographyStyle(
+        font: Font.custom(.medium, size: 9),
+        size: 9,
+        lineHeight: 12
+    )
 
     static let primaryButton = TypographyStyle(
         font: Font.custom(.medium, size: 16),
