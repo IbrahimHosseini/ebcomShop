@@ -5,7 +5,6 @@
 //  Created by Ibrahim on 2026-02-02.
 //
 
-import Kingfisher
 import SwiftUI
 
 struct ShopItemView: View {
@@ -32,11 +31,7 @@ struct ShopItemView: View {
                     .stroke(.gray50, lineWidth: 1)
                     
 
-                KFImage(URL(string: shop.iconUrl))
-                    .placeholder { AppProgressView() }
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: logoSize, height: logoSize)
+                AppImageView(url: shop.iconUrl, width: logoSize, height: logoSize, cornerRadius: nil)
             }
             .frame(width: containerSize, height: containerSize)
 

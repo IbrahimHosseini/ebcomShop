@@ -5,7 +5,6 @@
 //  Created by Ibrahim on 2026-02-02.
 //
 
-import Kingfisher
 import SwiftUI
 
 struct FixedBannerSectionView: View {
@@ -125,12 +124,7 @@ private struct FixedBannerImageView: View {
     let height: CGFloat
 
     var body: some View {
-        KFImage(URL(string: imageUrl))
-            .placeholder { AppProgressView() }
-            .resizable()
-            .scaledToFill()
-            .frame(width: width, height: height)
-            .clipped()
+        AppImageView(url: imageUrl, width: width, height: height, contentMode: .fill, cornerRadius: nil)
     }
 }
 

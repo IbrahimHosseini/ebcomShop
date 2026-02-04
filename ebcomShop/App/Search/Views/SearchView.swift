@@ -5,7 +5,6 @@
 //  Created by Ibrahim on 2026-02-02.
 //
 
-import Kingfisher
 import Observation
 import SwiftUI
 
@@ -235,13 +234,7 @@ private struct SearchResultRow: View {
             
             HStack {
                 
-                KFImage(URL(string: shop.iconUrl))
-                    .placeholder { AppProgressView() }
-                    .fade(duration: 0.25)
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 24, height: 24)
-                    .clipShape(RoundedRectangle(cornerRadius: 10))
+                AppImageView(url: shop.iconUrl, width: 24, height: 24, cornerRadius: 10)
                 
                 Text(shop.title)
                     .typography(.subheading)

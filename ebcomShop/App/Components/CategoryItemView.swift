@@ -5,7 +5,6 @@
 //  Created by Ibrahim on 2026-02-02.
 //
 
-import Kingfisher
 import SwiftUI
 
 struct CategoryItemView: View {
@@ -16,11 +15,7 @@ struct CategoryItemView: View {
 
     var body: some View {
         VStack(spacing: 8) {
-            KFImage(URL(string: category.iconUrl))
-                .placeholder { AppProgressView() }
-                .resizable()
-                .scaledToFit()
-                .frame(width: iconSize, height: iconSize)
+            AppImageView(url: category.iconUrl, width: iconSize, height: iconSize, cornerRadius: nil)
                 .padding(10)
                 .background(
                     Circle()
