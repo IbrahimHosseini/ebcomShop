@@ -2,7 +2,7 @@
 //  ErrorStateView.swift
 //  ebcomShop
 //
-//  Created by Assistant on 2026-02-04.
+//  Created by Ibrahim on 2026-02-04.
 //
 
 import SwiftUI
@@ -36,7 +36,7 @@ struct ErrorStateView: View {
     }
 
     var body: some View {
-        VStack(spacing: 16) {
+        VStack(spacing: 8) {
             Spacer()
 
             Text(title)
@@ -48,18 +48,17 @@ struct ErrorStateView: View {
                     .multilineTextAlignment(.center)
             }
 
-            Spacer()
 
             if let onRetry {
                 Button(retryTitle) {
                     Task { await onRetry() }
                 }
-                .padding(.horizontal, 16)
-                .padding(.vertical, 8)
+                .padding(16)
                 .typography(.primaryButton)
                 .foregroundColor(.greenPrimery)
                 .cornerRadius(8)
             }
+            Spacer()
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .padding()

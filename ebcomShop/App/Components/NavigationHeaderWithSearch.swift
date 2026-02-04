@@ -1,3 +1,10 @@
+//
+//  NavigationHeaderWithSearch.swift
+//  ebcomShop
+//
+//  Created by Ibrahim on 2026-02-02.
+//
+
 import SwiftUI
 
 /// A reusable header that shows the app logo and an optional search affordance.
@@ -22,11 +29,11 @@ import SwiftUI
 /// ```
 struct NavigationHeaderWithSearch: View {
     /// Whether to show the search affordance under the logo.
-    let showsSearch: Bool
+    private let showsSearch: Bool
     /// Placeholder text shown inside the search affordance.
-    let placeholder: String
+    private let placeholder: String
     /// Called when the search affordance is tapped. Use this to navigate or present search.
-    let onSearchTapped: (() -> Void)?
+    private let onSearchTapped: (() -> Void)?
 
     init(
         showsSearch: Bool = false,
