@@ -62,15 +62,6 @@ This directory contains comprehensive unit tests for all logic functions in the 
   - URL validation and error handling
   - Authentication flag testing
 
-### Storage Layer
-- **AuthStorageManagerTests.swift**: Tests for `AuthStorageManager` including:
-  - Token storage and retrieval
-  - Token overwriting
-  - Authentication state checking
-  - Session clearing
-  - Complete authentication flow
-  - Token refresh flow
-
 ## Test Structure
 
 Each test file follows this structure:

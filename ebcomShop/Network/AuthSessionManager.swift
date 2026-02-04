@@ -12,7 +12,6 @@ import Foundation
 
 extension Notification.Name {
     static let userSessionExpired = Notification.Name("lifeforge.userSessionExpired")
-    static let iCloudSyncSettingChanged = Notification.Name("lifeforge.iCloudSyncSettingChanged")
 }
 
 // MARK: - Auth Session Manager

@@ -77,27 +77,6 @@ final class KeychainStorage: LocalStorageProtocol {
         }
     }
 
-    func removeAll() {
-        // Remove all items for this service
-        let query: [String: Any] = [
-            kSecClass as String: kSecClassGenericPassword,
-            kSecAttrService as String: service
-        ]
-
-        let status = SecItemDelete(query as CFDictionary)
-        if status != errSecSuccess, status != errSecItemNotFound {
-            OSLogger.error("Failed to clear all Keychain items: \(status)")
-        }
-    }
-
-    func exists(forKey key: String) -> Bool {
-        var query = baseQuery(forKey: key)
-        query[kSecReturnData as String] = false
-
-        let status = SecItemCopyMatching(query as CFDictionary, nil)
-        return status == errSecSuccess
-    }
-
     // MARK: - Private Helpers
 
     private func baseQuery(forKey key: String) -> [String: Any] {

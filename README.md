@@ -8,7 +8,7 @@ ebcomShop is a native iOS application built with SwiftUI, featuring a clean arch
 
 ## ✨ Features
 
-- 🏠 **Home Screen** - Dynamic sections with categories, banners, and shop listings
+- 🏠 **Home Screen** - Dynamic sections with categories, banners, fixed banners, and shop listings
 - 🔍 **Search** - Real-time search with debouncing and history management
 - 🏪 **Shop Browsing** - Browse shops by categories and tags
 - 💾 **Offline Support** - Search history persistence with SwiftData
@@ -19,9 +19,9 @@ ebcomShop is a native iOS application built with SwiftUI, featuring a clean arch
 - **UI Framework**: SwiftUI
 - **Architecture**: MVVM with Observable pattern
 - **Networking**: Custom network layer with async/await
-- **Storage**: SwiftData for local persistence, Keychain for secure storage
+- **Storage**: SwiftData for search history; Keychain for auth tokens
 - **Concurrency**: Swift Concurrency (async/await, actors)
-- **Testing**: XCTest with comprehensive unit tests
+- **Testing**: XCTest with unit tests
 
 ## 📋 Requirements
 
@@ -42,40 +42,47 @@ ebcomShop is a native iOS application built with SwiftUI, featuring a clean arch
 ebcomShop/
 ├── App/
 │   ├── Home/              # Home screen module
-│   │   ├── Models/        # Data models
-│   │   ├── Views/         # SwiftUI views
-│   │   ├── ViewModels/    # Business logic
-│   │   ├── Services/      # Service protocols
-│   │   └── Networking/    # API endpoints
+│   │   ├── Models/        # BannerModel, CategoryModel, ShopModel, TagModel, FAQPayload, HomeModels, HomeSectionItem
+│   │   ├── Views/         # HomeView, Sections (Banner, Category, Shop, FixedBanner, FAQ)
+│   │   ├── ViewModels/    # HomeViewModel
+│   │   ├── Services/      # HomeServiceProtocol, HomeServiceImpl
+│   │   └── Networking/    # HomeEndpoint
 │   ├── Search/            # Search module
-│   │   ├── Views/         # Search UI
-│   │   └── ViewModels/    # Search logic
-│   ├── Components/        # Reusable UI components
-│   └── DI/                # Dependency injection
+│   │   ├── Views/         # SearchView
+│   │   └── ViewModels/    # SearchViewModel
+│   ├── Components/        # Reusable UI (BannerItemView, CategoryItemView, ShopItemView, SectionHeaderView, ErrorStateView, NavigationHeaderWithSearch, FAQRowView)
+│   └── DI/                # EnvironmentKeys (homeService)
 ├── Network/               # Network layer
 │   ├── NetworkClient.swift
+│   ├── NetworkClientProtocol.swift
 │   ├── APIEndpoint.swift
+│   ├── APIHandler.swift
 │   ├── ResponseHandler.swift
-│   └── NetworkError.swift
+│   ├── NetworkError.swift
+│   ├── NetworkConfiguration.swift
+│   ├── HTTPMethod.swift
+│   └── AuthSessionManager.swift
 ├── Storage/               # Storage layer
+│   ├── LocalStorageProtocol.swift
 │   ├── KeychainStorage.swift
 │   ├── UserDefaultsStorage.swift
 │   └── AuthStorageManager.swift
-├── Repositories/          # Data repositories
-├── Extensions/            # Swift extensions
-├── Models/                # Shared models
-└── Resources/             # Assets and configuration
+├── Repositories/          # SearchHistoryRepository, SearchHistoryRepositoryProtocol
+├── Extensions/            # Dictionary+Extension, Font+Extension (TypographyStyle)
+├── Logger/                # OSLogger
+├── Constants/             # Constants (ResponseResult, NetworkConfigKey)
+├── Models/                # SearchHistoryEntry (SwiftData)
+└── Resources/            # Assets, Colors, Fonts, Info.plist, LaunchScreen
 
-ebcomShopTests/            # Unit tests (154 tests)
-├── ViewModels/            # ViewModel tests
-├── Network/               # Network layer tests
-├── Storage/               # Storage layer tests
-└── Extensions/            # Extension tests
+ebcomShopTests/
+├── ViewModels/            # HomeViewModelTests, SearchViewModelTests
+├── Network/               # APIEndpointTests, NetworkClientTests, NetworkErrorTests, ResponseHandlerTests
+└── Extensions/            # DictionaryExtensionTests
 ```
 
 ## 🧪 Testing
 
-The project includes a comprehensive test suite with **154 unit tests** covering all logic functions.
+The project includes a unit test suite for ViewModels, Network layer, and Extensions.
 
 ### Running Tests
 
@@ -87,70 +94,53 @@ Cmd+Ctrl+Option+U        # Run with code coverage
 
 **Command Line:**
 ```bash
-xcodebuild test -scheme ebcomShop -destination 'platform=iOS Simulator,name=iPhone 15'
+xcodebuild test -scheme ebcomShop -destination 'platform=iOS Simulator,name=iPhone 16'
 ```
 
 ### Test Coverage
 
-- ✅ **ViewModels** - 38 tests
-  - HomeViewModel (15 tests)
-  - SearchViewModel (23 tests)
-- ✅ **Network Layer** - 66 tests
-  - ResponseHandler (12 tests)
-  - NetworkClient (12 tests)
-  - NetworkError (28 tests)
-  - APIEndpoint (14 tests)
-- ✅ **Storage** - 14 tests
-  - AuthStorageManager (14 tests)
-- ✅ **Extensions** - 22 tests
-  - Dictionary extensions (22 tests)
-
-**Total Code Coverage**: 80%+ for logic classes
+- ✅ **ViewModels** - HomeViewModel, SearchViewModel
+- ✅ **Network Layer** - ResponseHandler, NetworkClient, NetworkError, APIEndpoint
+- ✅ **Extensions** - Dictionary (trimmedString, string, jsonData, toJSONString, asDictionary)
 
 For detailed test documentation, see [ebcomShopTests/README.md](ebcomShopTests/README.md)
 
 ## 🏛 Architecture
 
 ### MVVM Pattern
-- **Models**: Data structures and business entities
+- **Models**: Data structures and business entities (Decodable/Sendable)
 - **Views**: SwiftUI views with declarative UI
 - **ViewModels**: Observable classes with @Observable macro
 
 ### Network Layer
-- Protocol-oriented design
+- Protocol-oriented design (APIEndpoint, APIHandler, ResponseHandler, NetworkClientProtocol)
 - Generic NetworkClient with endpoint-based routing
-- Automatic request/response handling
-- Built-in error mapping and retry logic
+- Automatic request/response handling and error mapping
+- AuthSessionManager for token-based auth (optional per endpoint)
 
 ### Storage Layer
-- Multiple storage backends (Keychain, UserDefaults)
-- Factory pattern for storage creation
-- Secure token management
+- LocalStorageProtocol with Keychain and UserDefaults implementations
+- StorageFactory for creating storage by type
+- AuthStorageManager for token get/clear (Keychain default)
 
 ## 🔒 Security
 
-- Keychain storage for sensitive data (tokens, credentials)
-- Secure session management
-- Automatic token refresh handling
-- Session expiry notifications
+- Keychain storage for sensitive data (tokens)
+- AuthSessionManager for session expiry and notifications
 
 ## 📦 Dependencies
 
-This project uses **zero external dependencies** - all networking, storage, and business logic is implemented natively using:
-- Foundation
-- SwiftUI
-- SwiftData
-- Security (Keychain)
+- **Kingfisher** - Image loading and caching (banners, categories, shops)
+- **SwiftUI**, **SwiftData**, **Foundation**, **Security** (Keychain) - built-in
 
 ## 🔧 Configuration
 
-Base URL and API configuration can be modified in:
-- `Network/NetworkConfiguration.swift`
-- `Constants/Constants.swift`
+Base URL and API configuration:
+- `Network/NetworkConfiguration.swift` - reads from Info.plist / .xcconfig
+- `Constants/Constants.swift` - NetworkConfigKey (API_BASE_URL, etc.)
 
 ## 📝 Code Style
 
 - Swift style guide compliant
 - Clear naming conventions
-- Comprehensive documentation comments
 - Modular and testable code

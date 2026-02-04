@@ -39,14 +39,6 @@ protocol LocalStorageProtocol {
     /// Removes the value associated with the given key
     /// - Parameter key: The key to remove
     func remove(forKey key: String)
-
-    /// Removes all stored values
-    func removeAll()
-
-    /// Checks if a value exists for the given key
-    /// - Parameter key: The key to check
-    /// - Returns: True if a value exists, false otherwise
-    func exists(forKey key: String) -> Bool
 }
 
 // MARK: - Storage Configuration

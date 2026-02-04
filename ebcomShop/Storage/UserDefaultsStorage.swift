@@ -48,17 +48,4 @@ final class UserDefaultsStorage: LocalStorageProtocol {
         defaults.removeObject(forKey: key)
         defaults.synchronize()
     }
-
-    func removeAll() {
-        // Remove all keys with our app prefix
-        let dictionary = defaults.dictionaryRepresentation()
-        for key in dictionary.keys where key.hasPrefix("lifeforge.") {
-            defaults.removeObject(forKey: key)
-        }
-        defaults.synchronize()
-    }
-
-    func exists(forKey key: String) -> Bool {
-        defaults.object(forKey: key) != nil
-    }
 }
