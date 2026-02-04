@@ -94,33 +94,10 @@ struct SearchView: View {
     }
 
     private func searchBar(@Bindable viewModel: SearchViewModel) -> some View {
-        HStack(spacing: 8) {
-            Image(.search)
-                .renderingMode(.template)
-                .foregroundStyle(.gray400)
-
-            TextField("جستجو فروشگاه یا برند...", text: $viewModel.query)
-                .typography(.input)
-                .foregroundStyle(.primary)
-                .submitLabel(.search)
-
-            if !viewModel.query.isEmpty {
-                Button {
-                    viewModel.clearQuery()
-                } label: {
-                    Image(.closeCircle)
-                }
-                .buttonStyle(.plain)
-            }
-        }
-        .padding(.horizontal, 12)
-        .frame(height: 48)
-        .frame(maxWidth: .infinity)
-        .background(Color.background)
-        .clipShape(RoundedRectangle(cornerRadius: 6))
-        .overlay(
-            RoundedRectangle(cornerRadius: 6)
-                .stroke(.greenPrimery, lineWidth: 1)
+        SearchBarView(
+            placeholder: "جستجو فروشگاه یا برند...",
+            text: $viewModel.query,
+            onClear: { viewModel.clearQuery() }
         )
         .padding(.horizontal, 16)
         .padding(.top, 8)
@@ -133,7 +110,7 @@ struct SearchView: View {
             
             HStack {
                 Text("جستجو های اخیر")
-                    .typography(.headline)
+                    .typography(.subtitle)
                 
                 Spacer()
                 
@@ -141,7 +118,7 @@ struct SearchView: View {
                     viewModel.deleteHistory(viewModel.history)
                 } label: {
                     Image(.delete)
-                        .typography(.caption2)
+                        .renderingMode(.template)
                         .foregroundStyle(.gray400)
                 }
                 .buttonStyle(.plain)

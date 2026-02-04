@@ -59,33 +59,9 @@ struct NavigationHeaderWithSearch: View {
             }
 
             if showsSearch {
-                Button {
-                    onSearchTapped?()
-                } label: {
-                    HStack(spacing: 8) {
-                        Image(.search)
-                            .renderingMode(.template)
-                            .foregroundStyle(.gray400)
-
-                        Text(placeholder)
-                            .typography(.body)
-                            .foregroundStyle(Color.gray400)
-
-                        Spacer(minLength: 0)
-                    }
-                    .padding(.horizontal, 12)
-                    .frame(height: 48)
-                    .frame(maxWidth: .infinity)
-                    .background(Color.background)
-                    .clipShape(RoundedRectangle(cornerRadius: 6))
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 6)
-                            .stroke(Color.inputBorder, lineWidth: 1)
-                    )
-                }
-                .buttonStyle(.plain)
-                .padding(.horizontal, 16)
-                .padding(.bottom, 16)
+                SearchBarView.placeholderOnly(placeholder: placeholder, onTap: { onSearchTapped?() })
+                    .padding(.horizontal, 16)
+                    .padding(.bottom, 16)
             }
         }
         .background(Color.background)
