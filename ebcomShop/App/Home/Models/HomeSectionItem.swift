@@ -1,3 +1,12 @@
+//
+//  HomeSectionItem.swift
+//  ebcomShop
+//
+//  Created by Ibrahim on 2026-02-04.
+//
+
+import Foundation
+
 // MARK: - View-ready section items (order preserved from API)
 
 enum HomeSectionItem: Sendable {

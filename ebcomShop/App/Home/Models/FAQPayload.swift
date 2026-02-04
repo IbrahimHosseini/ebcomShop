@@ -1,3 +1,12 @@
+//
+//  FAQPayload.swift
+//  ebcomShop
+//
+//  Created by Ibrahim on 2026-02-04.
+//
+
+import Foundation
+
 // MARK: - FAQ
 
 struct FAQPayload: Decodable, Sendable {

@@ -1,3 +1,12 @@
+//
+//  ShopModel.swift
+//  ebcomShop
+//
+//  Created by Ibrahim on 2026-02-04.
+//
+
+import Foundation
+
 // MARK: - Shops
 
 struct ShopModel: Decodable, Sendable, Identifiable {

@@ -1,3 +1,12 @@
+//
+//  TagModel.swift
+//  ebcomShop
+//
+//  Created by Ibrahim on 2026-02-04.
+//
+
+import Foundation
+
 // MARK: - Tags & Labels (minimal for display)
 
 struct TagModel: Decodable, Sendable, Identifiable {
