@@ -29,7 +29,8 @@ struct CategoryItemView: View {
             )
 
             Text(category.title)
-                .typography(.caption)
+                .typography(.subtitle)
+                .foregroundStyle(Color.gray900)
                 .multilineTextAlignment(.center)
                 .lineLimit(1)
                 .frame(width: itemWidth)

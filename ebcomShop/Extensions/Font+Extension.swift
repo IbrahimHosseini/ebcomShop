@@ -17,6 +17,19 @@ struct TypographyStyle {
     let size: CGFloat
     let lineHeight: CGFloat
 
+    static let badge = TypographyStyle(
+        font: Font.custom(.medium, size: 9),
+        size: 9,
+        lineHeight: 12
+    )
+    
+    static let subtitle = TypographyStyle(
+        font: Font.custom(.bold, size: 12),
+        size: 12,
+        lineHeight: 16
+    )
+    
+    
     static let headline = TypographyStyle(
         font: Font.custom(.medium, size: 17),
         size: 17,
@@ -53,11 +66,6 @@ struct TypographyStyle {
         lineHeight: 14
     )
     
-    static let badge = TypographyStyle(
-        font: Font.custom(.medium, size: 9),
-        size: 9,
-        lineHeight: 12
-    )
 
     static let primaryButton = TypographyStyle(
         font: Font.custom(.medium, size: 16),

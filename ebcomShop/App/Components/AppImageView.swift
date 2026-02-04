@@ -14,6 +14,7 @@ import SwiftUI
 /// ```swift
 /// AppImageView(url: shop.iconUrl, width: 24, height: 24, cornerRadius: 10)
 /// AppImageView(url: imageUrl, width: w, height: h, contentMode: .fill)
+/// AppImageView(url: imageUrl, width: w, height: h, contentMode: .fill, onImageLoaded: { size in ... })
 /// ```
 struct AppImageView: View {
     let url: String
@@ -22,6 +23,7 @@ struct AppImageView: View {
     var cornerRadius: CGFloat? = 10
     var contentMode: SwiftUI.ContentMode = .fit
     var fadeDuration: Double = 0.25
+    var onImageLoaded: ((CGSize) -> Void)? = nil
 
     @ViewBuilder
     var body: some View {
@@ -29,6 +31,9 @@ struct AppImageView: View {
             .placeholder { AppProgressView() }
             .fade(duration: fadeDuration)
             .resizable()
+            .onSuccess { result in
+                onImageLoaded?(result.image.size)
+            }
 
         Group {
             switch contentMode {

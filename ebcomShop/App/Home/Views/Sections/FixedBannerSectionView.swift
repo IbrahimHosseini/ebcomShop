@@ -124,7 +124,7 @@ private struct FixedBannerImageView: View {
     let height: CGFloat
 
     var body: some View {
-        AppImageView(url: imageUrl, width: width, height: height, contentMode: .fill, cornerRadius: 0)
+        AppImageView(url: imageUrl, width: width, height: height, cornerRadius: 0, contentMode: .fill)
     }
 }
 

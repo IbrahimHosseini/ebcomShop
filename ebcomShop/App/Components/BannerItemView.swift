@@ -5,7 +5,6 @@
 //  Created by Ibrahim on 2026-02-02.
 //
 
-import Kingfisher
 import SwiftUI
 
 struct BannerItemView: View {
@@ -20,21 +19,22 @@ struct BannerItemView: View {
     }
 
     var body: some View {
-        KFImage(URL(string: imageUrl))
-            .onSuccess { result in
-                let size = result.image.size
+        AppImageView(
+            url: imageUrl,
+            width: width,
+            height: width * aspectRatio,
+            cornerRadius: 12,
+            contentMode: .fill,
+            onImageLoaded: { size in
                 guard size.width > 0 else { return }
+                
                 let ratio = size.height / size.width
+                
                 Task { @MainActor in
                     aspectRatio = ratio
                 }
             }
-            .placeholder { AppProgressView() }
-            .resizable()
-            .scaledToFill()
-            .frame(width: width, height: width * aspectRatio)
-            .clipped()
-            .clipShape(RoundedRectangle(cornerRadius: 12))
+        )
     }
 }
 
