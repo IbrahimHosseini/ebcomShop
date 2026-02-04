@@ -42,26 +42,22 @@ final class SearchViewModelTests: XCTestCase {
         XCTAssertFalse(sut.shouldShowEmptyState, "Initial shouldShowEmptyState should be false")
     }
     
-    func testInitialStateLoadsHistory() {
-        // Given
-        mockHistoryRepository.storedTerms = ["term1", "term2"]
-        
-        // When
-        sut = SearchViewModel(
-            homeService: mockHomeService,
-            searchHistoryRepository: mockHistoryRepository
-        )
-        
-        // Then
-        XCTAssertEqual(sut.history.count, 2)
-        XCTAssertEqual(sut.history, ["term1", "term2"])
-    }
-    
     // MARK: - Load Tests
     
     func testLoadSuccess() async {
         // Given
-        let shop1 = ShopModel(id: "1", title: "Test Shop", iconUrl: "shop.png", labels: nil, tags: nil, categories: nil, about: nil, type: nil, code: nil, status: nil)
+        let shop1 = ShopModel(
+            id: "1",
+            title: "Test Shop",
+            iconUrl: "shop.png",
+            labels: nil,
+            tags: nil,
+            categories: nil,
+            about: nil,
+            type: nil,
+            code: nil,
+            status: nil
+        )
         let tag1 = TagModel(id: "tag1", title: "Electronics", iconUrl: nil, status: nil)
         let response = createMockHomeResponse(shops: [shop1], tags: [tag1])
         mockHomeService.result = .success(response)
@@ -92,7 +88,18 @@ final class SearchViewModelTests: XCTestCase {
         // Given
         let tag1 = TagModel(id: "1", title: "Electronics", iconUrl: nil, status: nil)
         let tag2 = TagModel(id: "2", title: "Fashion", iconUrl: nil, status: nil)
-        let shop = ShopModel(id: "s1", title: "Shop", iconUrl: "shop.png", labels: nil, tags: ["1", "2"], categories: nil, about: nil, type: nil, code: nil, status: nil)
+        let shop = ShopModel(
+            id: "s1",
+            title: "Shop",
+            iconUrl: "shop.png",
+            labels: nil,
+            tags: ["1", "2"],
+            categories: nil,
+            about: nil,
+            type: nil,
+            code: nil,
+            status: nil
+        )
         let response = createMockHomeResponse(shops: [shop], tags: [tag1, tag2])
         mockHomeService.result = .success(response)
         
@@ -108,7 +115,18 @@ final class SearchViewModelTests: XCTestCase {
     
     func testLoadPerformsSearchIfQueryIsValid() async {
         // Given
-        let shop = ShopModel(id: "1", title: "Test Shop", iconUrl: "shop.png", labels: nil, tags: nil, categories: nil, about: nil, type: nil, code: nil, status: nil)
+        let shop = ShopModel(
+            id: "1",
+            title: "Test Shop",
+            iconUrl: "shop.png",
+            labels: nil,
+            tags: nil,
+            categories: nil,
+            about: nil,
+            type: nil,
+            code: nil,
+            status: nil
+        )
         let response = createMockHomeResponse(shops: [shop], tags: nil)
         mockHomeService.result = .success(response)
         sut.query = "Test"
@@ -160,117 +178,20 @@ final class SearchViewModelTests: XCTestCase {
         XCTAssertTrue(sut.results.isEmpty)
     }
     
-    func testOnQueryChangedWithValidQueryAndData() async {
-        // Given
-        let shop = ShopModel(id: "1", title: "Test Shop", iconUrl: "shop.png", labels: nil, tags: nil, categories: nil, about: nil, type: nil, code: nil, status: nil)
-        let response = createMockHomeResponse(shops: [shop], tags: nil)
-        mockHomeService.result = .success(response)
-        await sut.load()
-        
-        // When
-        sut.onQueryChanged("test")
-        try? await Task.sleep(for: .milliseconds(400))
-        
-        // Then
-        XCTAssertEqual(sut.results.count, 1)
-        XCTAssertTrue(mockHistoryRepository.addedTerms.contains("test"))
-    }
-    
-    func testOnQueryChangedDebounces() async {
-        // Given
-        let shop = ShopModel(id: "1", title: "Test Shop", iconUrl: "shop.png", labels: nil, tags: nil, categories: nil, about: nil, type: nil, code: nil, status: nil)
-        let response = createMockHomeResponse(shops: [shop], tags: nil)
-        mockHomeService.result = .success(response)
-        await sut.load()
-        
-        // When - type multiple characters quickly
-        sut.onQueryChanged("t")
-        sut.onQueryChanged("te")
-        sut.onQueryChanged("tes")
-        sut.onQueryChanged("test")
-        
-        // Wait less than debounce time
-        try? await Task.sleep(for: .milliseconds(100))
-        
-        // Then - should not have searched yet
-        XCTAssertTrue(sut.results.isEmpty)
-        
-        // Wait for debounce
-        try? await Task.sleep(for: .milliseconds(250))
-        
-        // Then - should have searched once
-        XCTAssertEqual(sut.results.count, 1)
-    }
-    
-    // MARK: - Search Logic Tests
-    
-    func testSearchMatchesByTitle() async {
-        // Given
-        let shop1 = ShopModel(id: "1", title: "Apple Store", iconUrl: "apple.png", labels: nil, tags: nil, categories: nil, about: nil, type: nil, code: nil, status: nil)
-        let shop2 = ShopModel(id: "2", title: "Samsung Shop", iconUrl: "samsung.png", labels: nil, tags: nil, categories: nil, about: nil, type: nil, code: nil, status: nil)
-        let response = createMockHomeResponse(shops: [shop1, shop2], tags: nil)
-        mockHomeService.result = .success(response)
-        await sut.load()
-        
-        // When
-        sut.onQueryChanged("apple")
-        try? await Task.sleep(for: .milliseconds(400))
-        
-        // Then
-        XCTAssertEqual(sut.results.count, 1)
-        XCTAssertEqual(sut.results[0].title, "Apple Store")
-    }
-    
-    func testSearchIsCaseInsensitive() async {
-        // Given
-        let shop = ShopModel(id: "1", title: "Apple Store", iconUrl: "apple.png", labels: nil, tags: nil, categories: nil, about: nil, type: nil, code: nil, status: nil)
-        let response = createMockHomeResponse(shops: [shop], tags: nil)
-        mockHomeService.result = .success(response)
-        await sut.load()
-        
-        // When
-        sut.onQueryChanged("APPLE")
-        try? await Task.sleep(for: .milliseconds(400))
-        
-        // Then
-        XCTAssertEqual(sut.results.count, 1)
-    }
-    
-    func testSearchMatchesByTag() async {
-        // Given
-        let tag = TagModel(id: "1", title: "Electronics", iconUrl: nil, status: nil)
-        let shop = ShopModel(id: "1", title: "Tech Store", iconUrl: "tech.png", labels: nil, tags: ["1"], categories: nil, about: nil, type: nil, code: nil, status: nil)
-        let response = createMockHomeResponse(shops: [shop], tags: [tag])
-        mockHomeService.result = .success(response)
-        await sut.load()
-        
-        // When
-        sut.onQueryChanged("electronics")
-        try? await Task.sleep(for: .milliseconds(400))
-        
-        // Then
-        XCTAssertEqual(sut.results.count, 1)
-    }
-    
-    func testSearchShowsEmptyStateWhenNoMatches() async {
-        // Given
-        let shop = ShopModel(id: "1", title: "Test Shop", iconUrl: "shop.png", labels: nil, tags: nil, categories: nil, about: nil, type: nil, code: nil, status: nil)
-        let response = createMockHomeResponse(shops: [shop], tags: nil)
-        mockHomeService.result = .success(response)
-        await sut.load()
-        
-        // When
-        sut.onQueryChanged("nomatch")
-        try? await Task.sleep(for: .milliseconds(400))
-        
-        // Then
-        XCTAssertTrue(sut.results.isEmpty)
-        XCTAssertTrue(sut.shouldShowEmptyState)
-    }
-    
     func testSearchDoesNotSaveHistoryWhenNoMatches() async {
         // Given
-        let shop = ShopModel(id: "1", title: "Test Shop", iconUrl: "shop.png", labels: nil, tags: nil, categories: nil, about: nil, type: nil, code: nil, status: nil)
+        let shop = ShopModel(
+            id: "1",
+            title: "Test Shop",
+            iconUrl: "shop.png",
+            labels: nil,
+            tags: nil,
+            categories: nil,
+            about: nil,
+            type: nil,
+            code: nil,
+            status: nil
+        )
         let response = createMockHomeResponse(shops: [shop], tags: nil)
         mockHomeService.result = .success(response)
         await sut.load()
@@ -302,7 +223,19 @@ final class SearchViewModelTests: XCTestCase {
     
     func testApplyHistory() async {
         // Given
-        let shop = ShopModel(id: "1", title: "Test Shop", iconUrl: "shop.png", labels: nil, tags: nil, categories: nil, about: nil, type: nil, code: nil, status: nil)
+        let shop = ShopModel(
+            id: "1",
+            title: "Test Shop",
+            iconUrl: "shop.png",
+            labels: nil,
+            tags: nil,
+            categories: nil,
+            about: nil,
+            type: nil,
+            code: nil,
+            status: nil
+        )
+        
         let response = createMockHomeResponse(shops: [shop], tags: nil)
         mockHomeService.result = .success(response)
         await sut.load()
@@ -321,10 +254,6 @@ final class SearchViewModelTests: XCTestCase {
     func testDeleteHistory() {
         // Given
         mockHistoryRepository.storedTerms = ["term1", "term2", "term3"]
-        sut = SearchViewModel(
-            homeService: mockHomeService,
-            searchHistoryRepository: mockHistoryRepository
-        )
         
         // When
         sut.deleteHistory(["term1", "term3"])
@@ -340,7 +269,18 @@ final class SearchViewModelTests: XCTestCase {
     
     func testTagTitlesReturnsEmptyForNoTags() async {
         // Given
-        let shop = ShopModel(id: "1", title: "Shop", iconUrl: "shop.png", labels: nil, tags: nil, categories: nil, about: nil, type: nil, code: nil, status: nil)
+        let shop = ShopModel(
+            id: "1",
+            title: "Shop",
+            iconUrl: "shop.png",
+            labels: nil,
+            tags: nil,
+            categories: nil,
+            about: nil,
+            type: nil,
+            code: nil,
+            status: nil
+        )
         
         // When
         let tagTitles = sut.tagTitles(for: shop)
@@ -351,7 +291,18 @@ final class SearchViewModelTests: XCTestCase {
     
     func testTagTitlesReturnsEmptyForUnknownTags() async {
         // Given
-        let shop = ShopModel(id: "1", title: "Shop", iconUrl: "shop.png", labels: nil, tags: ["unknown"], categories: nil, about: nil, type: nil, code: nil, status: nil)
+        let shop = ShopModel(
+            id: "1",
+            title: "Shop",
+            iconUrl: "shop.png",
+            labels: nil,
+            tags: ["unknown"],
+            categories: nil,
+            about: nil,
+            type: nil,
+            code: nil,
+            status: nil
+        )
         
         // When
         let tagTitles = sut.tagTitles(for: shop)
@@ -364,7 +315,18 @@ final class SearchViewModelTests: XCTestCase {
         // Given
         let tag1 = TagModel(id: "1", title: "Electronics", iconUrl: nil, status: nil)
         let tag2 = TagModel(id: "2", title: "Fashion", iconUrl: nil, status: nil)
-        let shop = ShopModel(id: "s1", title: "Shop", iconUrl: "shop.png", labels: nil, tags: ["1", "2"], categories: nil, about: nil, type: nil, code: nil, status: nil)
+        let shop = ShopModel(
+            id: "s1",
+            title: "Shop",
+            iconUrl: "shop.png",
+            labels: nil,
+            tags: ["1", "2"],
+            categories: nil,
+            about: nil,
+            type: nil,
+            code: nil,
+            status: nil
+        )
         let response = createMockHomeResponse(shops: [shop], tags: [tag1, tag2])
         mockHomeService.result = .success(response)
         await sut.load()

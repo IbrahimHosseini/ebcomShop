@@ -57,15 +57,21 @@ final class HomeViewModelTests: XCTestCase {
         let category1 = CategoryModel(id: "1", title: "Category 1", iconUrl: "icon1.png", status: nil)
         let category2 = CategoryModel(id: "2", title: "Category 2", iconUrl: "icon2.png", status: nil)
         
-        let sectionPayload = HomeSectionPayload(title: "Categories", type: .category, subType: nil, list: ["1", "2"])
-        let homePayload = HomePayload(sections: [sectionPayload], search: true, faq: nil)
+        let sectionPayload = HomeSectionPayload(
+            title: "Categories",
+            type: .category,
+            subType: nil,
+            list: ["1", "2"]
+        )
+        let homePayload = HomePayload(search: true, faq: nil, sections: [sectionPayload])
         
         let response = HomeResponse(
             home: homePayload,
             categories: [category1, category2],
             shops: [],
             banners: [],
-            tags: nil
+            tags: nil,
+            labels: nil
         )
         
         mockHomeService.result = .success(response)
@@ -90,15 +96,21 @@ final class HomeViewModelTests: XCTestCase {
         let banner1 = BannerModel(id: "1", imageUrl: "banner1.jpg")
         let banner2 = BannerModel(id: "2", imageUrl: "banner2.jpg")
         
-        let sectionPayload = HomeSectionPayload(title: nil, type: .banner, subType: nil, list: ["1", "2"])
-        let homePayload = HomePayload(sections: [sectionPayload], search: false, faq: nil)
+        let sectionPayload = HomeSectionPayload(
+            title: nil,
+            type: .banner,
+            subType: nil,
+            list: ["1", "2"]
+        )
+        let homePayload = HomePayload(search: false, faq: nil, sections: [sectionPayload])
         
         let response = HomeResponse(
             home: homePayload,
             categories: [],
             shops: [],
             banners: [banner1, banner2],
-            tags: nil
+            tags: nil,
+            labels: nil
         )
         
         mockHomeService.result = .success(response)
@@ -119,18 +131,41 @@ final class HomeViewModelTests: XCTestCase {
     
     func testLoadMapsShops() async {
         // Given
-        let shop1 = ShopModel(id: "1", title: "Shop 1", iconUrl: "shop1.png", labels: nil, tags: nil, categories: nil, about: nil, type: nil, code: nil, status: nil)
-        let shop2 = ShopModel(id: "2", title: "Shop 2", iconUrl: "shop2.png", labels: nil, tags: nil, categories: nil, about: nil, type: nil, code: nil, status: nil)
+        let shop1 = ShopModel(
+            id: "1",
+            title: "Shop 1",
+            iconUrl: "shop1.png",
+            labels: nil,
+            tags: nil,
+            categories: nil,
+            about: nil,
+            type: nil,
+            code: nil,
+            status: nil
+        )
+        let shop2 = ShopModel(
+            id: "2",
+            title: "Shop 2",
+            iconUrl: "shop2.png",
+            labels: nil,
+            tags: nil,
+            categories: nil,
+            about: nil,
+            type: nil,
+            code: nil,
+            status: nil
+        )
         
         let sectionPayload = HomeSectionPayload(title: "Shops", type: .shop, subType: nil, list: ["1", "2"])
-        let homePayload = HomePayload(sections: [sectionPayload], search: false, faq: nil)
+        let homePayload = HomePayload(search: false, faq: nil, sections: [sectionPayload])
         
         let response = HomeResponse(
             home: homePayload,
             categories: [],
             shops: [shop1, shop2],
             banners: [],
-            tags: nil
+            tags: nil,
+            labels: nil
         )
         
         mockHomeService.result = .success(response)
@@ -140,7 +175,7 @@ final class HomeViewModelTests: XCTestCase {
         
         // Then
         XCTAssertEqual(sut.sections.count, 1)
-        if case .shop(let title, let items) = sut.sections[0] {
+        if case .shop(let title, let items) = await sut.sections[0] {
             XCTAssertEqual(title, "Shops")
             XCTAssertEqual(items.count, 2)
             XCTAssertEqual(items[0].id, "1")
@@ -155,14 +190,15 @@ final class HomeViewModelTests: XCTestCase {
         let banner1 = BannerModel(id: "1", imageUrl: "banner1.jpg")
         
         let sectionPayload = HomeSectionPayload(title: "Fixed Banner", type: .fixedBanner, subType: nil, list: ["1"])
-        let homePayload = HomePayload(sections: [sectionPayload], search: false, faq: nil)
+        let homePayload = HomePayload(search: false, faq: nil, sections: [sectionPayload])
         
         let response = HomeResponse(
             home: homePayload,
             categories: [],
             shops: [],
             banners: [banner1],
-            tags: nil
+            tags: nil,
+            labels: nil
         )
         
         mockHomeService.result = .success(response)
@@ -172,7 +208,7 @@ final class HomeViewModelTests: XCTestCase {
         
         // Then
         XCTAssertEqual(sut.sections.count, 1)
-        if case .fixedBanner(let title, let items) = sut.sections[0] {
+        if case .fixedBanner(let title, let items) = await sut.sections[0] {
             XCTAssertEqual(title, "Fixed Banner")
             XCTAssertEqual(items.count, 1)
             XCTAssertEqual(items[0].id, "1")
@@ -185,15 +221,21 @@ final class HomeViewModelTests: XCTestCase {
         // Given - section references items that don't exist
         let category1 = CategoryModel(id: "1", title: "Category 1", iconUrl: "icon1.png", status: nil)
         
-        let sectionPayload = HomeSectionPayload(title: "Categories", type: .category, subType: nil, list: ["1", "999"]) // "999" doesn't exist
-        let homePayload = HomePayload(sections: [sectionPayload], search: false, faq: nil)
+        let sectionPayload = HomeSectionPayload(
+            title: "Categories",
+            type: .category,
+            subType: nil,
+            list: ["1", "999"]
+        ) // "999" doesn't exist
+        let homePayload = HomePayload(search: false, faq: nil, sections: [sectionPayload])
         
         let response = HomeResponse(
             home: homePayload,
             categories: [category1],
             shops: [],
             banners: [],
-            tags: nil
+            tags: nil,
+            labels: nil
         )
         
         mockHomeService.result = .success(response)
@@ -203,7 +245,7 @@ final class HomeViewModelTests: XCTestCase {
         
         // Then
         XCTAssertEqual(sut.sections.count, 1)
-        if case .category(_, let items) = sut.sections[0] {
+        if case .category(_, let items) = await sut.sections[0] {
             XCTAssertEqual(items.count, 1, "Should only include existing items")
             XCTAssertEqual(items[0].id, "1")
         } else {
@@ -266,8 +308,24 @@ final class HomeViewModelTests: XCTestCase {
     // MARK: - Helper Methods
     
     private func createMockHomeResponse() -> HomeResponse {
-        let category = CategoryModel(id: "1", title: "Test Category", iconUrl: "icon.png", status: nil)
-        let shop = ShopModel(id: "1", title: "Test Shop", iconUrl: "shop.png", labels: nil, tags: nil, categories: nil, about: nil, type: nil, code: nil, status: nil)
+        let category = CategoryModel(
+            id: "1",
+            title: "Test Category",
+            iconUrl: "icon.png",
+            status: nil
+        )
+        let shop = ShopModel(
+            id: "1",
+            title: "Test Shop",
+            iconUrl: "shop.png",
+            labels: nil,
+            tags: nil,
+            categories: nil,
+            about: nil,
+            type: nil,
+            code: nil,
+            status: nil
+        )
         
         let section1 = HomeSectionPayload(title: "Categories", type: .category, subType: nil, list: ["1"])
         let section2 = HomeSectionPayload(title: "Shops", type: .shop, subType: nil, list: ["1"])

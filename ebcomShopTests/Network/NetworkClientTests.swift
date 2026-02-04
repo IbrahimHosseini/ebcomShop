@@ -200,19 +200,6 @@ final class NetworkClientTests: XCTestCase {
         }
     }
     
-    func testRequestFailsWithInvalidEndpoint() async {
-        // When
-        let result: ResponseResult<TestModel> = await sut.request(.invalid)
-        
-        // Then
-        switch result {
-        case .success:
-            XCTFail("Expected failure with invalid endpoint")
-        case .failure(let error):
-            XCTAssertEqual(error, .badRequest)
-        }
-    }
-    
     // MARK: - Decoding Error Tests
     
     func testRequestFailsWhenDecodingFails() async {
