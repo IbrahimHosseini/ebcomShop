@@ -141,9 +141,9 @@ final class NetworkClient<EndpointType: APIEndpoint>: NetworkClientProtocol {
             }
         }
         
-        OSLogger.info("request.url: \(request.url)")
-        OSLogger.info("request.httpBody: \(request.httpBody)")
-        OSLogger.info("request.httpMethod: \(request.httpMethod)")
+        OSLogger.info("request.url: \(String(describing: request.url))")
+        OSLogger.info("request.httpBody: \(String(describing: request.httpBody))")
+        OSLogger.info("request.httpMethod: \(String(describing: request.httpMethod))")
 
         do {
             // Step 3: Execute the network request

@@ -66,7 +66,7 @@ struct FixedBannerSectionView: View {
             GeometryReader { geometry in
                 Color.clear
                     .onAppear { containerWidth = geometry.size.width }
-                    .onChange(of: geometry.size.width) { containerWidth = $0 }
+                    .onChange(of: geometry.size.width) { _, newValue in containerWidth = newValue }
             }
         )
     }
