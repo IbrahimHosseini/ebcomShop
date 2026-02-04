@@ -14,6 +14,7 @@ final class HomeViewModel {
 
     private(set) var sections: [HomeSectionItem] = []
     private(set) var faq: FAQPayload?
+    private(set) var hasSearch: Bool = false
     private(set) var isLoading = false
     private(set) var loadError: NetworkError?
 
@@ -43,6 +44,8 @@ final class HomeViewModel {
         let categoryById = Dictionary(uniqueKeysWithValues: response.categories.map { ($0.id, $0) })
         let shopById = Dictionary(uniqueKeysWithValues: response.shops.map { ($0.id, $0) })
         let bannerById = Dictionary(uniqueKeysWithValues: response.banners.map { ($0.id, $0) })
+        
+        hasSearch = response.home.search ?? false
 
         return response.home.sections.map { payload in
             switch payload.type {

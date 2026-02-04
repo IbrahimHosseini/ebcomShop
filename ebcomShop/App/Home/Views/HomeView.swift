@@ -29,7 +29,7 @@ struct HomeView: View {
     @ViewBuilder
     private func content(viewModel: HomeViewModel) -> some View {
         VStack(spacing: 0) {
-            headerView
+            headerView(viewModel.hasSearch)
             ScrollView {
                 LazyVStack(spacing: 0) {
                     if viewModel.isLoading {
@@ -57,7 +57,7 @@ struct HomeView: View {
         }
     }
 
-    private var headerView: some View {
+    private func headerView(_ hasSearch: Bool) -> some View {
         VStack(alignment: .leading, spacing: 12) {
             Image(.logo)
                 .resizable()
@@ -67,31 +67,33 @@ struct HomeView: View {
                 .padding(.top, 8)
                 .padding(.bottom, 24)
 
-            NavigationLink(destination: SearchView()) {
-                HStack(spacing: 8) {
-                    Image(.search)
-                        .renderingMode(.template)
-                        .foregroundStyle(.gray400)
-                    
-                    Text("جستجو فروشگاه یا برند...")
-                        .typography(.callout)
-                        .foregroundStyle(Color.gray400)
-                    Spacer(minLength: 0)
-                    
+            if hasSearch {
+                NavigationLink(destination: SearchView()) {
+                    HStack(spacing: 8) {
+                        Image(.search)
+                            .renderingMode(.template)
+                            .foregroundStyle(.gray400)
+                        
+                        Text("جستجو فروشگاه یا برند...")
+                            .typography(.callout)
+                            .foregroundStyle(Color.gray400)
+                        Spacer(minLength: 0)
+                        
+                    }
+                    .padding(.horizontal, 12)
+                    .frame(height: 48)
+                    .frame(maxWidth: .infinity)
+                    .background(Color.background)
+                    .clipShape(RoundedRectangle(cornerRadius: 6))
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 6)
+                            .stroke(.gray200, lineWidth: 1)
+                    )
                 }
-                .padding(.horizontal, 12)
-                .frame(height: 48)
-                .frame(maxWidth: .infinity)
-                .background(Color.background)
-                .clipShape(RoundedRectangle(cornerRadius: 6))
-                .overlay(
-                    RoundedRectangle(cornerRadius: 6)
-                        .stroke(.gray200, lineWidth: 1)
-                )
+                .buttonStyle(.plain)
+                .padding(.horizontal, 16)
+                .padding(.bottom, 16)
             }
-            .buttonStyle(.plain)
-            .padding(.horizontal, 16)
-            .padding(.bottom, 16)
         }
         .background(Color.background)
     }
@@ -111,15 +113,32 @@ struct HomeView: View {
     }
 
     private func errorView(viewModel: HomeViewModel) -> some View {
-        VStack(spacing: 12) {
+        VStack(spacing: 16) {
+            Spacer()
+            
             Text("خطا در بارگذاری")
                 .typography(.headline)
             Text(viewModel.loadError?.localizedDescription ?? "")
                 .typography(.footnote)
                 .multilineTextAlignment(.center)
+            
+            Spacer()
+
+            Button("تلاش مجدد") {
+                Task {
+                    await viewModel.load()
+                }
+            }
+            .padding(.horizontal, 16)
+            .padding(.vertical, 8)
+            .typography(.primaryButton)
+            .background(Color.greenPrimery)
+            .foregroundColor(.white)
+            .cornerRadius(8)
+            
         }
-        .frame(maxWidth: .infinity)
-        .padding(.vertical, 40)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .padding()
     }
 }
 

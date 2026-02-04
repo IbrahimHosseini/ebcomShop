@@ -9,13 +9,19 @@ import Kingfisher
 import SwiftUI
 
 struct ShopItemView: View {
-    let shop: ShopModel
-    let itemWidth: CGFloat
-    private let containerSizeRatio: CGFloat = 1.5
-    private let logoSizeRatio: CGFloat = 1.0
+    private let shop: ShopModel
+    private let itemWidth: CGFloat
+    private let containerSizeRatio: CGFloat = 1.3
+    
+    init(shop: ShopModel, itemWidth: CGFloat) {
+        self.shop = shop
+        self.itemWidth = itemWidth
+    }
 
     var body: some View {
         let resolvedWidth = itemWidth > 0 ? itemWidth : 56
+        let logoSizeRatio: CGFloat = containerSizeRatio * 0.7
+        
         let containerSize = max(0, floor(resolvedWidth * containerSizeRatio))
         let logoSize = max(0, floor(resolvedWidth * logoSizeRatio))
 
