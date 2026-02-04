@@ -20,7 +20,7 @@ struct AppImageView: View {
     var width: CGFloat?
     var height: CGFloat?
     var cornerRadius: CGFloat? = 10
-    var contentMode: ContentMode = .fit
+    var contentMode: SwiftUI.ContentMode = .fit
     var fadeDuration: Double = 0.25
 
     @ViewBuilder
