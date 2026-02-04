@@ -267,7 +267,7 @@ final class ResponseHandlerTests: XCTestCase {
         
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .iso8601
-        let customHandler = ResponseHandlerImpl(decoder: decoder)
+        let customHandler = await ResponseHandlerImpl(decoder: decoder)
         
         let json = """
         {

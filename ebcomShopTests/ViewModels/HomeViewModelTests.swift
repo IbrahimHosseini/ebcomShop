@@ -8,6 +8,7 @@
 import XCTest
 @testable import ebcomShop
 
+@MainActor
 final class HomeViewModelTests: XCTestCase {
     private var sut: HomeViewModel!
     private var mockHomeService: MockHomeService!
@@ -175,7 +176,7 @@ final class HomeViewModelTests: XCTestCase {
         
         // Then
         XCTAssertEqual(sut.sections.count, 1)
-        if case .shop(let title, let items) = await sut.sections[0] {
+        if case .shop(let title, let items) = sut.sections[0] {
             XCTAssertEqual(title, "Shops")
             XCTAssertEqual(items.count, 2)
             XCTAssertEqual(items[0].id, "1")
@@ -208,7 +209,7 @@ final class HomeViewModelTests: XCTestCase {
         
         // Then
         XCTAssertEqual(sut.sections.count, 1)
-        if case .fixedBanner(let title, let items) = await sut.sections[0] {
+        if case .fixedBanner(let title, let items) = sut.sections[0] {
             XCTAssertEqual(title, "Fixed Banner")
             XCTAssertEqual(items.count, 1)
             XCTAssertEqual(items[0].id, "1")
@@ -245,7 +246,7 @@ final class HomeViewModelTests: XCTestCase {
         
         // Then
         XCTAssertEqual(sut.sections.count, 1)
-        if case .category(_, let items) = await sut.sections[0] {
+        if case .category(_, let items) = sut.sections[0] {
             XCTAssertEqual(items.count, 1, "Should only include existing items")
             XCTAssertEqual(items[0].id, "1")
         } else {
@@ -347,8 +348,8 @@ final class HomeViewModelTests: XCTestCase {
 // MARK: - Mock Home Service
 
 final class MockHomeService: HomeServiceProtocol {
-    var result: ResponseResult<HomeResponse> = .failure(.noData)
-    var delayInSeconds: Double = 0
+    nonisolated(unsafe) var result: ResponseResult<HomeResponse> = .failure(.noData)
+    nonisolated(unsafe) var delayInSeconds: Double = 0
     
     func fetchHome() async -> ResponseResult<HomeResponse> {
         if delayInSeconds > 0 {
