@@ -68,7 +68,7 @@ struct NavigationHeaderWithSearch: View {
                             .foregroundStyle(.gray400)
 
                         Text(placeholder)
-                            .typography(.callout)
+                            .typography(.body)
                             .foregroundStyle(Color.gray400)
 
                         Spacer(minLength: 0)
@@ -80,7 +80,7 @@ struct NavigationHeaderWithSearch: View {
                     .clipShape(RoundedRectangle(cornerRadius: 6))
                     .overlay(
                         RoundedRectangle(cornerRadius: 6)
-                            .stroke(Color.gray200, lineWidth: 1)
+                            .stroke(Color.inputBorder, lineWidth: 1)
                     )
                 }
                 .buttonStyle(.plain)

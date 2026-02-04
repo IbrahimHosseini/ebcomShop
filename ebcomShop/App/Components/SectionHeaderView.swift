@@ -34,8 +34,8 @@ struct SectionHeaderView: View {
     var body: some View {
         HStack {
             Text(title)
-                .typography(.caption)
-                .foregroundStyle(Color.black900)
+                .typography(.title)
+                .foregroundStyle(Color.gray900)
                 .padding(.horizontal, horizontalPadding)
 
             Spacer()
@@ -44,7 +44,7 @@ struct SectionHeaderView: View {
                 Button(actionTitle) {
                     action()
                 }
-                .typography(.caption)
+                .typography(.secondaryButton)
                 .foregroundStyle(Color.greenPrimery)
                 .padding(.horizontal, horizontalPadding)
             }

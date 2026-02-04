@@ -18,9 +18,9 @@ struct FAQRowView: View {
             Button(action: onTap) {
                 HStack {
                     Text(title)
-                        .typography(.footnote)
+                        .typography(.body)
                         .multilineTextAlignment(.leading)
-                        .foregroundStyle(Color.black900)
+                        .foregroundStyle(Color.gray900)
                     Spacer()
                     Image(isExpanded ? .arrowUp : .arrowDown)
                 }
@@ -31,8 +31,8 @@ struct FAQRowView: View {
 
             if isExpanded {
                 Text(description)
-                    .typography(.footnote)
-                    .foregroundStyle(Color(.secondaryLabel))
+                    .typography(.body)
+                    .foregroundStyle(Color.gray400)
                     .padding(.horizontal, 16)
                     .padding(.bottom, 12)
             }

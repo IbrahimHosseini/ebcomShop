@@ -37,7 +37,7 @@ struct ShopItemView: View {
 
 
             Text(shop.title)
-                .typography(.chipSemibold)
+                .typography(.subtitle)
                 .foregroundStyle(Color.gray500)
                 .lineLimit(1)
         }
