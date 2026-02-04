@@ -17,21 +17,11 @@ struct CategorySectionView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             if let title, !title.isEmpty {
-                HStack {
-                    Text(title)
-                        .typography(.caption)
-                        .foregroundStyle(Color.black900)
-                        .padding(.horizontal, horizontalPadding)
-                    
-                    Spacer()
-                    
-                    Button("مشاهده همه") {
-                        // TODO: navigate to list view
-                    }
-                    .typography(.caption)
-                    .foregroundStyle(Color.greenPrimery)
-                    .padding(.horizontal, horizontalPadding)
-                    
+                SectionHeaderView(
+                    title: title,
+                    horizontalPadding: horizontalPadding
+                ) {
+                    // TODO: navigate to list view
                 }
             }
 
@@ -80,3 +70,4 @@ struct CategorySectionView: View {
         ]
     )
 }
+

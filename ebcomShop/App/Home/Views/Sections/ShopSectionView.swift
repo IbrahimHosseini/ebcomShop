@@ -22,20 +22,8 @@ struct ShopSectionView: View {
 
         VStack(alignment: .leading, spacing: 12) {
             if let title, !title.isEmpty {
-                HStack {
-                    Text(title)
-                        .typography(.caption)
-                        .foregroundStyle(Color.black900)
-                        .padding(.horizontal, horizontalPadding)
-                    
-                    Spacer()
-                    
-                    Button("مشاهده همه") {
-                        // TODO: navigate to list view
-                    }
-                    .typography(.caption)
-                    .foregroundStyle(Color.greenPrimery)
-                    .padding(.horizontal, horizontalPadding)
+                SectionHeaderView(title: title) {
+                    // TODO: navigate to list view
                 }
             }
 
@@ -73,7 +61,7 @@ private struct ShopSectionWidthKey: PreferenceKey {
 
 #Preview {
     ShopSectionView(
-        title: "Title",
+        title: "فروشگاه آنلاین",
         items: [ShopModel(
             id: "",
             title: "دیجی کالا",

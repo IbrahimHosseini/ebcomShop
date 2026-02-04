@@ -38,10 +38,7 @@ struct FixedBannerSectionView: View {
 
         VStack(alignment: .leading, spacing: 12) {
             if let title, !title.isEmpty {
-                Text(title)
-                    .typography(.caption)
-                    .foregroundStyle(Color.black900)
-                    .padding(.horizontal, horizontalPadding)
+                SectionHeaderView(title: title)
             }
 
             Group {

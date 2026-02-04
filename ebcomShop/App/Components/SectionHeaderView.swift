@@ -2,7 +2,7 @@
 //  SectionHeaderView.swift
 //  ebcomShop
 //
-//  Created by Assistant on 2026-02-04.
+//  Created by Ibrahim on 2026-02-04.
 //
 
 import SwiftUI
@@ -17,13 +17,13 @@ struct SectionHeaderView: View {
     let title: String
     let actionTitle: String
     let horizontalPadding: CGFloat
-    let action: () -> Void
+    let action: (() -> Void)?
 
     init(
         title: String,
         actionTitle: String = "مشاهده همه",
         horizontalPadding: CGFloat = 16,
-        action: @escaping () -> Void
+        action: (() -> Void)? = nil
     ) {
         self.title = title
         self.actionTitle = actionTitle
@@ -40,12 +40,14 @@ struct SectionHeaderView: View {
 
             Spacer()
 
-            Button(actionTitle) {
-                action()
+            if let action {
+                Button(actionTitle) {
+                    action()
+                }
+                .typography(.caption)
+                .foregroundStyle(Color.greenPrimery)
+                .padding(.horizontal, horizontalPadding)
             }
-            .typography(.caption)
-            .foregroundStyle(Color.greenPrimery)
-            .padding(.horizontal, horizontalPadding)
         }
     }
 }

@@ -15,10 +15,8 @@ struct FAQSectionView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text(faq.title)
-                .typography(.faqTitle)
-                .foregroundStyle(Color.black900)
-                .padding(.horizontal, horizontalPadding)
+            
+            SectionHeaderView(title: faq.title)
 
             VStack(spacing: 0) {
                 ForEach(Array(faq.sections.enumerated()), id: \.offset) { index, section in
