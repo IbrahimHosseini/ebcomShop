@@ -1,4 +1,4 @@
-# ebcomShop
+# EBCOM Shop
 
 SwiftUI iOS app for ebcomShop - A modern e-commerce shopping platform.
 

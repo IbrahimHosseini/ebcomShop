@@ -1,4 +1,4 @@
-# ebcomShop Test Suite
+# EBCOM Shop Test Suite
 
 This directory contains comprehensive unit tests for all logic functions in the ebcomShop application.
 
