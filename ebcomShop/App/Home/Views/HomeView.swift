@@ -22,6 +22,7 @@ struct HomeView: View {
                         .task { viewModel = HomeViewModel(homeService: homeService) }
                 }
             }
+            .background(Color.background)
         }
     }
 
@@ -74,14 +75,14 @@ struct HomeView: View {
                     
                     Text("جستجو فروشگاه یا برند...")
                         .typography(.callout)
-                        .foregroundStyle(Color("gray400"))
+                        .foregroundStyle(Color.gray400)
                     Spacer(minLength: 0)
                     
                 }
                 .padding(.horizontal, 12)
                 .frame(height: 48)
                 .frame(maxWidth: .infinity)
-                .background(Color(.systemBackground))
+                .background(Color.background)
                 .clipShape(RoundedRectangle(cornerRadius: 6))
                 .overlay(
                     RoundedRectangle(cornerRadius: 6)
@@ -92,7 +93,7 @@ struct HomeView: View {
             .padding(.horizontal, 16)
             .padding(.bottom, 16)
         }
-        .background(Color(.systemBackground))
+        .background(Color.background)
     }
 
     @ViewBuilder

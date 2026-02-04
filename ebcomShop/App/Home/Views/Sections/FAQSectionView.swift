@@ -62,5 +62,4 @@ struct FAQSectionView: View {
             ]
         )
     )
-    .background(Color.red)
 }

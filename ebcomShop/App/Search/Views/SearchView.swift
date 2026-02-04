@@ -272,7 +272,7 @@ private struct SearchResultRow: View {
                                 .foregroundStyle(.secondary)
                                 .padding(.horizontal, 8)
                                 .padding(.vertical, 4)
-                                .background(Color(.systemGray6))
+                                .background(Color.gray500)
                                 .clipShape(RoundedRectangle(cornerRadius: 10))
                         }
                     }
