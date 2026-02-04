@@ -126,7 +126,7 @@ private struct FixedBannerImageView: View {
 
     var body: some View {
         KFImage(URL(string: imageUrl))
-            .placeholder { ProgressView() }
+            .placeholder { AppProgressView() }
             .resizable()
             .scaledToFill()
             .frame(width: width, height: height)

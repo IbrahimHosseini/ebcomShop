@@ -20,8 +20,7 @@ struct SearchView: View {
             if let viewModel {
                 content(viewModel: viewModel)
             } else {
-                ProgressView()
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                AppProgressView(style: .fullScreen)
                     .task {
                         viewModel = SearchViewModel(
                             homeService: homeService,
@@ -74,9 +73,7 @@ struct SearchView: View {
             ScrollView {
                 LazyVStack(spacing: 0) {
                     if viewModel.isLoading {
-                        ProgressView()
-                            .frame(maxWidth: .infinity)
-                            .padding(.vertical, 32)
+                        AppProgressView(style: .inline(verticalPadding: 32))
                     } else if viewModel.loadError != nil {
                         errorView
                     } else if viewModel.shouldShowEmptyState {
@@ -239,7 +236,7 @@ private struct SearchResultRow: View {
             HStack {
                 
                 KFImage(URL(string: shop.iconUrl))
-                    .placeholder { ProgressView() }
+                    .placeholder { AppProgressView() }
                     .fade(duration: 0.25)
                     .resizable()
                     .scaledToFit()

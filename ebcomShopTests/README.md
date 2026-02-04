@@ -129,11 +129,3 @@ To view code coverage:
 
 Target coverage: 80%+ for logic classes
 
-## Best Practices
-
-1. **Isolation**: Each test is independent and doesn't rely on other tests
-2. **AAA Pattern**: Tests follow Arrange-Act-Assert pattern
-3. **Mock Dependencies**: All external dependencies are mocked
-4. **Clear Assertions**: Each test has clear, focused assertions
-5. **Descriptive Names**: Test names clearly describe what they test
-6. **Edge Cases**: Tests cover both happy paths and edge cases

@@ -18,8 +18,7 @@ struct HomeView: View {
                 if let viewModel {
                     content(viewModel: viewModel)
                 } else {
-                    ProgressView()
-                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    AppProgressView(style: .fullScreen)
                         .task { viewModel = HomeViewModel(homeService: homeService) }
                 }
             }
@@ -34,9 +33,7 @@ struct HomeView: View {
             ScrollView {
                 LazyVStack(spacing: 0) {
                     if viewModel.isLoading {
-                        ProgressView()
-                            .frame(maxWidth: .infinity)
-                            .padding(.vertical, 40)
+                        AppProgressView(style: .inline(verticalPadding: 40))
                     } else if viewModel.loadError != nil {
                         errorView(viewModel: viewModel)
                     } else {

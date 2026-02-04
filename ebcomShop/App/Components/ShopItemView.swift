@@ -33,7 +33,7 @@ struct ShopItemView: View {
                     
 
                 KFImage(URL(string: shop.iconUrl))
-                    .placeholder { ProgressView() }
+                    .placeholder { AppProgressView() }
                     .resizable()
                     .scaledToFit()
                     .frame(width: logoSize, height: logoSize)

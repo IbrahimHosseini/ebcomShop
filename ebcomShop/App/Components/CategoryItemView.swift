@@ -17,7 +17,7 @@ struct CategoryItemView: View {
     var body: some View {
         VStack(spacing: 8) {
             KFImage(URL(string: category.iconUrl))
-                .placeholder { ProgressView() }
+                .placeholder { AppProgressView() }
                 .resizable()
                 .scaledToFit()
                 .frame(width: iconSize, height: iconSize)

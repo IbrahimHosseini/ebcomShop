@@ -29,7 +29,7 @@ struct BannerItemView: View {
                     aspectRatio = ratio
                 }
             }
-            .placeholder { ProgressView() }
+            .placeholder { AppProgressView() }
             .resizable()
             .scaledToFill()
             .frame(width: width, height: width * aspectRatio)
