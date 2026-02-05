@@ -35,7 +35,7 @@ struct SectionHeaderView: View {
         HStack {
             Text(title)
                 .typography(.title)
-                .foregroundStyle(Color.gray900)
+                .foregroundStyle(Color.grayBold)
                 .padding(.horizontal, horizontalPadding)
 
             Spacer()

@@ -37,6 +37,8 @@ struct SearchView: View {
                         dismiss()
                     } label: {
                         Image(.back)
+                            .renderingMode(.template)
+                            .foregroundStyle(Color.grayBold)
                     }
                     .buttonStyle(.plain)
                 }
@@ -47,6 +49,8 @@ struct SearchView: View {
                         dismiss()
                     } label: {
                         Image(.back)
+                            .renderingMode(.template)
+                            .foregroundStyle(Color.grayBold)
                     }
                     .buttonStyle(.plain)
                 }
@@ -54,8 +58,8 @@ struct SearchView: View {
             
             ToolbarItem(placement: .principal) {
                 Text("جستجو")
-                    .font(.customMedium(12))
-                    .foregroundStyle(Color.gray300)
+                    .typography(.title)
+                    .foregroundStyle(Color.grayMedium)
             }
         }
     }
@@ -111,6 +115,7 @@ struct SearchView: View {
             HStack {
                 Text("جستجو های اخیر")
                     .typography(.subtitle)
+                    .foregroundStyle(Color.grayBold)
                 
                 Spacer()
                 
@@ -141,19 +146,21 @@ struct SearchView: View {
                 viewModel.applyHistory(term)
             } label: {
                 Image(.resent)
+                    .renderingMode(.template)
+                    .foregroundStyle(Color.gray500)
                 Text(term)
-                    .typography(.chip)
-                    .foregroundStyle(.primary)
+                    .typography(.body)
+                    .foregroundStyle(.gray500)
             }
             .buttonStyle(.plain)
         }
         .padding(.horizontal, 16)
         .padding(.vertical, 8)
         .background(Color(.background))
-        .clipShape(RoundedRectangle(cornerRadius: 20))
+        .clipShape(Capsule())
         .overlay(
             RoundedRectangle(cornerRadius: 20)
-                .stroke(.gray50, lineWidth: 1)
+                .stroke(.grayDivider, lineWidth: 1)
         )
     }
 
@@ -184,8 +191,12 @@ struct SearchView: View {
     private var searchTextResultView: some View {
         HStack(spacing: 8) {
             Image(.search2)
-            Text("جستجو برای '\(viewModel?.query ?? "")' ")
-                .typography(.headline)
+                .renderingMode(.template)
+                .foregroundStyle(Color.grayBold)
+            
+            Text("جستجو برای ”\(viewModel?.query ?? "")“ ")
+                .typography(.subtitle)
+                .foregroundStyle(Color.grayBold)
             Spacer()
         }
         .frame(maxWidth: .infinity)

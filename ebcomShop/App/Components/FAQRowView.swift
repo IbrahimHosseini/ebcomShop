@@ -20,7 +20,7 @@ struct FAQRowView: View {
                     Text(title)
                         .typography(.body)
                         .multilineTextAlignment(.leading)
-                        .foregroundStyle(Color.gray900)
+                        .foregroundStyle(Color.grayBold)
                     Spacer()
                     Image(isExpanded ? .arrowUp : .arrowDown)
                 }

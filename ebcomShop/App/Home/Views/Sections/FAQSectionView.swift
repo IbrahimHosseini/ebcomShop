@@ -33,7 +33,7 @@ struct FAQSectionView: View {
                     
                     if index < faq.sections.count - 1 {
                         Divider()
-                            .foregroundStyle(Color.gray50)
+                            .foregroundStyle(Color.grayDivider)
                             .padding(.horizontal, horizontalPadding)
                     }
                 }

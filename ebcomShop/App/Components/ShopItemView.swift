@@ -28,7 +28,7 @@ struct ShopItemView: View {
             ZStack {
                 RoundedRectangle(cornerRadius: 12)
                     .fill(Color.grayDeactive)
-                    .stroke(.gray50, lineWidth: 1)
+                    .stroke(.grayDivider, lineWidth: 1)
                     
 
                 AppImageView(url: shop.iconUrl, width: logoSize, height: logoSize, cornerRadius: 0)
