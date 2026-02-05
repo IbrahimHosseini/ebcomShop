@@ -82,7 +82,6 @@ struct SearchView: View {
     @ViewBuilder
     private func resultsList(@Bindable viewModel: SearchViewModel) -> some View {
         if viewModel.query.trimmingCharacters(in: .whitespacesAndNewlines).count >= 3 {
-            
             SearchTextResultView(query: viewModel.query)
             
             ForEach(viewModel.results) { shop in
@@ -101,7 +100,7 @@ struct SearchView: View {
         }
         .frame(maxWidth: .infinity)
     }
-    
+
     private var errorView: some View {
         ErrorStateView(
             title: "خطا در بارگذاری",

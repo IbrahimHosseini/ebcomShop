@@ -15,7 +15,7 @@ import SwiftUI
 /// SearchBarView(placeholder: "جستجو...", text: $query)
 ///
 /// // Tappable placeholder (e.g. header)
-/// SearchBarView(placeholder: "جستجو...", onTap: { showSearch = true })
+/// SearchBarView.placeholderOnly(placeholder: "جستجو...", onTap: { showSearch = true })
 /// ```
 struct SearchBarView: View {
     let placeholder: String
