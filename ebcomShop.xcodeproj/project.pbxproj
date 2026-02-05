@@ -21,6 +21,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		0F457A182F34C022000AA4D0 /* develop.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = develop.xctestplan; sourceTree = "<group>"; };
 		0F49CEA52F30EC0800CA3B4C /* ebcomShop.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ebcomShop.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0F49CEB42F30EC0A00CA3B4C /* ebcomShopTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ebcomShopTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		0F49D1012F30EC0800CA3B4C /* debug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = debug.xcconfig; sourceTree = "<group>"; };
@@ -86,6 +87,7 @@
 		0F49CE9C2F30EC0800CA3B4C = {
 			isa = PBXGroup;
 			children = (
+				0F457A182F34C022000AA4D0 /* develop.xctestplan */,
 				0F49CEA72F30EC0800CA3B4C /* ebcomShop */,
 				0F49CEB72F30EC0A00CA3B4C /* ebcomShopTests */,
 				0F49CEA62F30EC0800CA3B4C /* Products */,
