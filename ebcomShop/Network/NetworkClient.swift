@@ -124,21 +124,8 @@ final class NetworkClient<EndpointType: APIEndpoint>: NetworkClientProtocol {
     /// ```
     func request<T: Decodable>(_ endpoint: EndpointType) async -> ResponseResult<T> {
         // Step 1: Convert endpoint to URLRequest
-        guard var request = try? endpoint.asURLRequest() else {
+        guard let request = try? endpoint.asURLRequest() else {
             return .failure(.badRequest)
-        }
-        
-        // Step 2: Add Authorization header if endpoint requires authentication
-        if endpoint.requiresAuthentication {
-            do {
-                let accessToken = try await AuthSessionManager.shared.getValidAccessToken()
-                request.setValue("Bearer \(accessToken)", forHTTPHeaderField: "Authorization")
-            } catch {
-                OSLogger.error("Failed to get access token: \(error.localizedDescription)")
-                // If we can't get a token, handle as unauthorized
-                await AuthSessionManager.shared.handleUnauthorized()
-                return .failure(.authorizationFailed)
-            }
         }
         
         OSLogger.info("request.url: \(String(describing: request.url))")
@@ -146,17 +133,17 @@ final class NetworkClient<EndpointType: APIEndpoint>: NetworkClientProtocol {
         OSLogger.info("request.httpMethod: \(String(describing: request.httpMethod))")
 
         do {
-            // Step 3: Execute the network request
+            // Step 2: Execute the network request
             let (data, urlResponse) = try await apiHandler.getData(with: request)
 
-            // Step 4: Validate the response type
+            // Step 3: Validate the response type
             guard let httpResponse = urlResponse as? HTTPURLResponse else {
                 return .failure(.badRequest)
             }
             
             OSLogger.info("httpResponse.statusCode: \(httpResponse.statusCode)")
 
-            // Step 5: Handle different HTTP status codes
+            // Step 4: Handle different HTTP status codes
             switch httpResponse.statusCode {
             case 200 ..< 300:
                 // Success: Parse the response data
@@ -175,7 +162,6 @@ final class NetworkClient<EndpointType: APIEndpoint>: NetworkClientProtocol {
                     OSLogger.error("Authorization failed - Backend response: \(errorString)")
                 }
                 // Handle unauthorized globally - this will clear session and notify app
-                await AuthSessionManager.shared.handleUnauthorized()
                 return .failure(.authorizationFailed)
 
             case 404:
