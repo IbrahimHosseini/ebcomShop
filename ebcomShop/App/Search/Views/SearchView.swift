@@ -11,7 +11,6 @@ import SwiftUI
 struct SearchView: View {
     @Environment(\.homeService) private var homeService
     @Environment(\.modelContext) private var modelContext
-    @Environment(\.dismiss) private var dismiss
     @State private var viewModel: SearchViewModel?
 
     var body: some View {
@@ -28,40 +27,7 @@ struct SearchView: View {
                     }
             }
         }
-        .navigationBarTitleDisplayMode(.inline)
-        .navigationBarBackButtonHidden(true)
-        .toolbar {
-            if #available(iOS 26.0, *) {
-                ToolbarItem(placement: .topBarLeading) {
-                    Button {
-                        dismiss()
-                    } label: {
-                        Image(.back)
-                            .renderingMode(.template)
-                            .foregroundStyle(Color.grayBold)
-                    }
-                    .buttonStyle(.plain)
-                }
-                .sharedBackgroundVisibility(.hidden)
-            } else {
-                ToolbarItem(placement: .topBarLeading) {
-                    Button {
-                        dismiss()
-                    } label: {
-                        Image(.back)
-                            .renderingMode(.template)
-                            .foregroundStyle(Color.grayBold)
-                    }
-                    .buttonStyle(.plain)
-                }
-            }
-            
-            ToolbarItem(placement: .principal) {
-                Text("جستجو")
-                    .typography(.title)
-                    .foregroundStyle(Color.grayMedium)
-            }
-        }
+        .navBarToolbar(title: "جستجو")
     }
 
     @ViewBuilder
@@ -71,7 +37,11 @@ struct SearchView: View {
         VStack(spacing: 0) {
             searchBar(viewModel: viewModel)
             if viewModel.query.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-                historySection(viewModel: viewModel)
+                SearchHistorySectionView(
+                    history: viewModel.history,
+                    onDelete: { viewModel.deleteHistory(viewModel.history) },
+                    onSelectTerm: { viewModel.applyHistory($0) }
+                )
             }
             ScrollView {
                 LazyVStack(spacing: 0) {
@@ -108,78 +78,22 @@ struct SearchView: View {
         .padding(.bottom, 12)
     }
 
-    @ViewBuilder
-    private func historySection(@Bindable viewModel: SearchViewModel) -> some View {
-        if !viewModel.history.isEmpty {
-            
-            HStack {
-                Text("جستجو های اخیر")
-                    .typography(.subtitle)
-                    .foregroundStyle(Color.grayBold)
-                
-                Spacer()
-                
-                Button {
-                    viewModel.deleteHistory(viewModel.history)
-                } label: {
-                    Image(.delete)
-                        .renderingMode(.template)
-                        .foregroundStyle(.gray400)
-                }
-                .buttonStyle(.plain)
-            }
-            .padding(16)
-            
-            FlowLayout(horizontalSpacing: 8, verticalSpacing: 8) {
-                ForEach(viewModel.history, id: \.self) { term in
-                    historyChip(term: term, viewModel: viewModel)
-                }
-            }
-            .padding(.horizontal, 16)
-            .padding(.bottom, 8)
-        }
-    }
-
-    private func historyChip(term: String, viewModel: SearchViewModel) -> some View {
-        HStack(spacing: 6) {
-            Button {
-                viewModel.applyHistory(term)
-            } label: {
-                Image(.resent)
-                    .renderingMode(.template)
-                    .foregroundStyle(Color.gray500)
-                Text(term)
-                    .typography(.body)
-                    .foregroundStyle(.gray500)
-            }
-            .buttonStyle(.plain)
-        }
-        .padding(.horizontal, 16)
-        .padding(.vertical, 8)
-        .background(Color(.background))
-        .clipShape(Capsule())
-        .overlay(
-            RoundedRectangle(cornerRadius: 20)
-                .stroke(.grayDivider, lineWidth: 1)
-        )
-    }
-
     /// Vertical list of found shops (logo, title, tags). Data comes from local filter on fetched shops only.
     @ViewBuilder
     private func resultsList(@Bindable viewModel: SearchViewModel) -> some View {
         if viewModel.query.trimmingCharacters(in: .whitespacesAndNewlines).count >= 3 {
             
-            searchTextResultView
+            SearchTextResultView(query: viewModel.query)
             
             ForEach(viewModel.results) { shop in
-                SearchResultRow(shop: shop, tagTitles: viewModel.tagTitles(for: shop))
+                SearchResultRowView(shop: shop, tagTitles: viewModel.tagTitles(for: shop))
             }
         }
     }
 
     private var emptyStateView: some View {
         VStack(spacing: 8) {
-            searchTextResultView
+            SearchTextResultView(query: viewModel?.query ?? "")
             
             ErrorStateView(
                 title: "نتیجه‌ای یافت نشد!"
@@ -188,109 +102,11 @@ struct SearchView: View {
         .frame(maxWidth: .infinity)
     }
     
-    private var searchTextResultView: some View {
-        HStack(spacing: 8) {
-            Image(.search2)
-                .renderingMode(.template)
-                .foregroundStyle(Color.grayBold)
-            
-            Text("جستجو برای ”\(viewModel?.query ?? "")“ ")
-                .typography(.subtitle)
-                .foregroundStyle(Color.grayBold)
-            Spacer()
-        }
-        .frame(maxWidth: .infinity)
-        .padding(.horizontal, 16)
-        .padding(.bottom, 16)
-    }
-
     private var errorView: some View {
         ErrorStateView(
             title: "خطا در بارگذاری",
             message: "دوباره تلاش کنید."
         )
-    }
-}
-
-/// Single row in search results: logo, title, and tag titles (vertical list item).
-private struct SearchResultRow: View {
-    let shop: ShopModel
-    let tagTitles: [String]
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            
-            HStack {
-                
-                AppImageView(url: shop.iconUrl, width: 24, height: 24, cornerRadius: 10)
-                
-                Text(shop.title)
-                    .typography(.subheading)
-                    .foregroundStyle(.primary)
-                
-                Spacer()
-                
-                Image(.openArrow)
-            }
-                
-
-            if !tagTitles.isEmpty {
-                ScrollView(.horizontal, showsIndicators: false) {
-                    HStack(spacing: 6) {
-                        ForEach(tagTitles, id: \.self) { tagTitle in
-                            TagView(title: tagTitle)
-                        }
-                    }
-                }
-            }
-            Spacer(minLength: 0)
-        }
-        .padding(.horizontal, 16)
-        .padding(.vertical, 12)
-    }
-}
-
-// MARK: - Flow Layout (wraps to next row when row is full)
-
-private struct FlowLayout: Layout {
-    var horizontalSpacing: CGFloat = 8
-    var verticalSpacing: CGFloat = 8
-
-    func sizeThatFits(proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) -> CGSize {
-        let result = arrange(proposal: proposal, subviews: subviews)
-        return result.size
-    }
-
-    func placeSubviews(in bounds: CGRect, proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) {
-        let result = arrange(proposal: proposal, subviews: subviews)
-        for (index, point) in result.positions.enumerated() {
-            subviews[index].place(at: CGPoint(x: bounds.minX + point.x, y: bounds.minY + point.y), proposal: .unspecified)
-        }
-    }
-
-    private func arrange(proposal: ProposedViewSize, subviews: Subviews) -> (size: CGSize, positions: [CGPoint]) {
-        let maxWidth = proposal.width ?? .infinity
-        var positions: [CGPoint] = []
-        var x: CGFloat = 0
-        var y: CGFloat = 0
-        var rowHeight: CGFloat = 0
-        var totalHeight: CGFloat = 0
-
-        for subview in subviews {
-            let size = subview.sizeThatFits(.unspecified)
-            if x + size.width > maxWidth, x > 0 {
-                x = 0
-                y += rowHeight + verticalSpacing
-                totalHeight = y + size.height
-                rowHeight = 0
-            }
-            positions.append(CGPoint(x: x, y: y))
-            rowHeight = max(rowHeight, size.height)
-            x += size.width + horizontalSpacing
-            totalHeight = max(totalHeight, y + rowHeight)
-        }
-
-        return (CGSize(width: maxWidth, height: totalHeight), positions)
     }
 }
 
