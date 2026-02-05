@@ -53,18 +53,10 @@ struct TypographyStyle {
         lineHeight: 16
     )
     
-    
-    
     static let headline = TypographyStyle(
         font: Font.custom(.medium, size: 17),
         size: 17,
         lineHeight: 22
-    )
-
-    static let callout = TypographyStyle(
-        font: Font.custom(.medium, size: 16),
-        size: 16,
-        lineHeight: 21
     )
 
     static let footnote = TypographyStyle(
@@ -77,39 +69,6 @@ struct TypographyStyle {
         font: Font.custom(.medium, size: 15),
         size: 15,
         lineHeight: 20
-    )
-
-    static let caption = TypographyStyle(
-        font: Font.custom(.medium, size: 12),
-        size: 12,
-        lineHeight: 16
-    )
-
-    static let caption2 = TypographyStyle(
-        font: Font.custom(.medium, size: 11),
-        size: 11,
-        lineHeight: 14
-    )
-    
-
-
-
-    static let chip = TypographyStyle(
-        font: Font.custom(.medium, size: 14),
-        size: 14,
-        lineHeight: 20
-    )
-
-    static let chipSemibold = TypographyStyle(
-        font: Font.custom(.medium, size: 12),
-        size: 12,
-        lineHeight: 20
-    )
-
-    static let input = TypographyStyle(
-        font: Font.custom(.regular, size: 16),
-        size: 16,
-        lineHeight: 21
     )
 }
 
@@ -127,15 +86,9 @@ extension Font {
 
     // Typography styles (Shop Design)
     static var headline: Font { TypographyStyle.headline.font }
-    static var callout: Font { TypographyStyle.callout.font }
     static var subheading: Font { TypographyStyle.subheading.font }
     static var footnote: Font { TypographyStyle.footnote.font }
-    static var caption: Font { TypographyStyle.caption.font }
-    static var caption2: Font { TypographyStyle.caption2.font }
     static var primaryButton: Font { TypographyStyle.primaryButton.font }
-    static var chip: Font { TypographyStyle.chip.font }
-    static var chipSemibold: Font { TypographyStyle.chipSemibold.font }
-    static var input: Font { TypographyStyle.input.font }
 }
 
 // MARK: - Typography Modifier
