@@ -1,0 +1,30 @@
+{
+  "configurations" : [
+    {
+      "id" : "3B71B553-B5D4-4129-8FA4-C887188F9285",
+      "name" : "Test Scheme Action",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "performanceAntipatternCheckerEnabled" : true,
+    "targetForVariableExpansion" : {
+      "containerPath" : "container:ebcomShop.xcodeproj",
+      "identifier" : "0F49CEA42F30EC0800CA3B4C",
+      "name" : "ebcomShop"
+    }
+  },
+  "testTargets" : [
+    {
+      "parallelizable" : true,
+      "target" : {
+        "containerPath" : "container:ebcomShop.xcodeproj",
+        "identifier" : "0F49CEB32F30EC0A00CA3B4C",
+        "name" : "ebcomShopTests"
+      }
+    }
+  ],
+  "version" : 1
+}
