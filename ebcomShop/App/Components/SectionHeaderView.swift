@@ -49,6 +49,7 @@ struct SectionHeaderView: View {
                 .padding(.horizontal, horizontalPadding)
             }
         }
+        .padding(.top, 24)
     }
 }
 

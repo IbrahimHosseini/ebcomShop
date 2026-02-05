@@ -9,46 +9,54 @@ import SwiftUI
 
 struct ShopItemView: View {
     private let shop: ShopModel
-    private let itemWidth: CGFloat
-    private let containerSizeRatio: CGFloat = 1.3
+    private let logoRatio: CGFloat = 0.7
     
-    init(shop: ShopModel, itemWidth: CGFloat) {
+    init(shop: ShopModel) {
         self.shop = shop
-        self.itemWidth = itemWidth
     }
 
     var body: some View {
-        let resolvedWidth = itemWidth > 0 ? itemWidth : 56
-        let logoSizeRatio: CGFloat = containerSizeRatio * 0.7
-        
-        let containerSize = max(0, floor(resolvedWidth * containerSizeRatio))
-        let logoSize = max(0, floor(resolvedWidth * logoSizeRatio))
 
-        VStack(spacing: 6) {
-            ZStack {
-                RoundedRectangle(cornerRadius: 12)
-                    .fill(Color.grayDeactive)
-                    .stroke(.grayDivider, lineWidth: 1)
-                    
+        VStack(alignment: .center) {
+            
+            GeometryReader { geo in
+                let width = geo.size.width
+                let logoSize = floor(width * logoRatio)
+                
+                ZStack {
+                    RoundedRectangle(cornerRadius: 12)
+                        .fill(Color.grayDeactive)
+                        .stroke(.grayDivider, lineWidth: 1)
+                        
 
-                AppImageView(url: shop.iconUrl, width: logoSize, height: logoSize, cornerRadius: 0)
+                    AppImageView(
+                        url: shop.iconUrl,
+                        width: logoSize,
+                        height: logoSize,
+                        cornerRadius: 0
+                    )
+                }
+                .frame(width: width, height: width)
+                .frame(maxWidth: .infinity)
+                
             }
-            .frame(width: containerSize, height: containerSize)
-
-
+            .aspectRatio(1, contentMode: .fit)
+            
             Text(shop.title)
                 .typography(.subtitle)
+                .multilineTextAlignment(.center)
                 .foregroundStyle(Color.gray500)
                 .lineLimit(1)
         }
         .frame(maxWidth: .infinity)
+        
     }
 }
 
 #Preview {
     ShopItemView(
         shop: ShopModel(
-        id: "",
+        id: "1",
         title: "دیجی کالا",
         iconUrl: "https://static-ebcom.mci.ir/static/app/ewano/clients/fcf12143-adf5-4790-bbe3-63932b45de16.png",
         labels: nil,
@@ -58,7 +66,6 @@ struct ShopItemView: View {
         type: nil,
         code: nil,
         status: nil
-        ),
-        itemWidth: 80
+        )
     )
 }
