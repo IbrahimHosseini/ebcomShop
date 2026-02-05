@@ -52,11 +52,6 @@ protocol APIEndpoint {
     /// set the API parameters
     var body: [String: Any]? { get }
 
-    /// Whether this endpoint requires authentication
-    ///
-    /// If true, the Authorization header with Bearer token will be added automatically.
-    /// Defaults to true for security - override to false for public endpoints.
-    var requiresAuthentication: Bool { get }
 }
 
 // MARK: - Default Implementations
@@ -95,10 +90,6 @@ extension APIEndpoint {
     /// `httpBody` property, it will default to an empty dictionary when creating the API request.
     var body: [String: Any]? { [:] }
 
-    /// Default to requiring authentication for all endpoints
-    ///
-    /// Override this property to return false for public endpoints like login, register, etc.
-    var requiresAuthentication: Bool { false }
 }
 
 // MARK: - URLRequest Conversion
