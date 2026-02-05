@@ -24,16 +24,23 @@ struct CategorySectionView: View {
                     // TODO: navigate to list view
                 }
             }
-
-            ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: itemSpacing) {
-                    ForEach(items) { category in
-                        CategoryItemView(category: category)
+            
+            GeometryReader { geo in
+                let width: CGFloat = geo.size.width * 0.18
+                let height: CGFloat = width + itemSpacing*2
+                
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(spacing: itemSpacing) {
+                        ForEach(items) { category in
+                            CategoryItemView(itemWidth: width, category: category)
+                        }
                     }
+                    .padding(.horizontal, horizontalPadding)
+                    .padding(.vertical, 8)
                 }
-                .padding(.horizontal, horizontalPadding)
-                .padding(.vertical, 8)
+                .frame(height: height)
             }
+            .aspectRatio(4, contentMode: .fit)
         }
         .padding(.vertical, 8)
     }
@@ -66,7 +73,26 @@ struct CategorySectionView: View {
                 title: "آجیل و شیرینی",
                 iconUrl: "https://static-ebcom.mci.ir/static/app/ewano/shop/03b82cda-996d-445c-9cdf-5e6bb8149d4e.png",
                 status: nil
-            )
+            ),
+            .init(
+                id: "5",
+                title: "آجیل و شیرینی",
+                iconUrl: "https://static-ebcom.mci.ir/static/app/ewano/shop/03b82cda-996d-445c-9cdf-5e6bb8149d4e.png",
+                status: nil
+            ),
+            .init(
+                id: "6",
+                title: "آجیل و شیرینی",
+                iconUrl: "https://static-ebcom.mci.ir/static/app/ewano/shop/03b82cda-996d-445c-9cdf-5e6bb8149d4e.png",
+                status: nil
+            ),
+            .init(
+                id: "7",
+                title: "آجیل و شیرینی",
+                iconUrl: "https://static-ebcom.mci.ir/static/app/ewano/shop/03b82cda-996d-445c-9cdf-5e6bb8149d4e.png",
+                status: nil
+            ),
+            
         ]
     )
 }

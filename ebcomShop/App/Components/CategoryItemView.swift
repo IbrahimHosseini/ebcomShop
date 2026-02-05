@@ -8,10 +8,15 @@
 import SwiftUI
 
 struct CategoryItemView: View {
-    let category: CategoryModel
-
-    private let itemWidth: CGFloat = 72
-    private let iconSize: CGFloat = 50
+    private let category: CategoryModel
+    private let itemWidth: CGFloat
+    private let iconSize: CGFloat
+    
+    init(itemWidth: CGFloat, category: CategoryModel) {
+        self.category = category
+        self.itemWidth = itemWidth
+        self.iconSize = itemWidth * 0.6
+    }
 
     var body: some View {
         VStack(spacing: 8) {
@@ -21,7 +26,7 @@ struct CategoryItemView: View {
                 height: iconSize,
                 cornerRadius: 0
             )
-            .padding(10)
+            .padding(16)
             .background(
                 Circle()
                     .fill(Color.categoryBackground)
@@ -41,8 +46,9 @@ struct CategoryItemView: View {
 
 #Preview {
     CategoryItemView(
+        itemWidth: 72,
         category: .init(
-            id: "",
+            id: "1",
             title: "فروشگاه زنجیره‌ای",
             iconUrl: "https://static-ebcom.mci.ir/static/app/ewano/shop/21f6357e-58c7-4240-98cc-e4f9344c59e5.png",
             status: nil
