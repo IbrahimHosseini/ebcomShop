@@ -9,7 +9,7 @@ import Foundation
 
 // MARK: - Shops
 
-struct ShopModel: Decodable, Sendable, Identifiable {
+struct ShopModel: Codable, Sendable, Identifiable {
     let id: String
     let title: String
     let iconUrl: String
@@ -22,7 +22,7 @@ struct ShopModel: Decodable, Sendable, Identifiable {
     let status: String?
 }
 
-struct ShopAbout: Decodable, Sendable {
+struct ShopAbout: Codable, Sendable {
     let title: String?
     let description: String?
 }

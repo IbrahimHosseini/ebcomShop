@@ -9,7 +9,7 @@ import Foundation
 
 // MARK: - Categories
 
-struct CategoryModel: Decodable, Sendable, Identifiable {
+struct CategoryModel: Codable, Sendable, Identifiable {
     let id: String
     let title: String
     let iconUrl: String

@@ -9,14 +9,14 @@ import Foundation
 
 // MARK: - Tags & Labels (minimal for display)
 
-struct TagModel: Decodable, Sendable, Identifiable {
+struct TagModel: Codable, Sendable, Identifiable {
     let id: String
     let title: String?
     let iconUrl: String?
     let status: String?
 }
 
-struct LabelModel: Decodable, Sendable, Identifiable {
+struct LabelModel: Codable, Sendable, Identifiable {
     let id: String
     let title: String?
     let status: String?

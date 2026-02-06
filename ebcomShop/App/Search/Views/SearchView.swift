@@ -11,6 +11,8 @@ import SwiftUI
 struct SearchView: View {
     @Environment(\.homeService) private var homeService
     @Environment(\.modelContext) private var modelContext
+    @Environment(\.homeRepository) private var homeRepository
+    @Environment(\.networkMonitor) private var networkMonitor
     @State private var viewModel: SearchViewModel?
 
     var body: some View {
@@ -22,7 +24,9 @@ struct SearchView: View {
                     .task {
                         viewModel = SearchViewModel(
                             homeService: homeService,
-                            searchHistoryRepository: SearchHistoryRepository(modelContext: modelContext)
+                            searchHistoryRepository: SearchHistoryRepository(modelContext: modelContext),
+                            homeRepository: homeRepository,
+                            networkMonitor: networkMonitor
                         )
                     }
             }
@@ -112,4 +116,5 @@ struct SearchView: View {
 #Preview {
     SearchView()
         .environment(\.homeService, HomeServiceImpl())
+        .environment(\.networkMonitor, NetworkMonitor())
 }

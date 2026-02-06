@@ -13,14 +13,20 @@ final class SearchViewModelTests: XCTestCase {
     private var sut: SearchViewModel!
     private var mockHomeService: MockHomeService!
     private var mockHistoryRepository: MockSearchHistoryRepository!
+    private var mockHomeRepository: MockHomeRepository!
+    private var mockNetworkMonitor: MockNetworkMonitor!
     
     override func setUp() {
         super.setUp()
         mockHomeService = MockHomeService()
         mockHistoryRepository = MockSearchHistoryRepository()
+        mockHomeRepository = MockHomeRepository()
+        mockNetworkMonitor = MockNetworkMonitor()
         sut = SearchViewModel(
             homeService: mockHomeService,
-            searchHistoryRepository: mockHistoryRepository
+            searchHistoryRepository: mockHistoryRepository,
+            homeRepository: mockHomeRepository,
+            networkMonitor: mockNetworkMonitor
         )
     }
     
@@ -28,6 +34,8 @@ final class SearchViewModelTests: XCTestCase {
         sut = nil
         mockHomeService = nil
         mockHistoryRepository = nil
+        mockHomeRepository = nil
+        mockNetworkMonitor = nil
         super.tearDown()
     }
     
@@ -338,6 +346,130 @@ final class SearchViewModelTests: XCTestCase {
         XCTAssertEqual(tagTitles.count, 2)
         XCTAssertTrue(tagTitles.contains("Electronics"))
         XCTAssertTrue(tagTitles.contains("Fashion"))
+    }
+    
+    // MARK: - Offline Tests
+    
+    func testLoadShowsCachedDataImmediately() async {
+        // Given - cached data exists
+        let shop = ShopModel(
+            id: "1",
+            title: "Cached Shop",
+            iconUrl: "shop.png",
+            labels: nil,
+            tags: nil,
+            categories: nil,
+            about: nil,
+            type: nil,
+            code: nil,
+            status: nil
+        )
+        let cachedResponse = createMockHomeResponse(shops: [shop], tags: nil)
+        mockHomeRepository.cachedResponse = cachedResponse
+        mockHomeService.result = .success(cachedResponse)
+        
+        // When
+        await sut.load()
+        
+        // Then
+        XCTAssertFalse(sut.allShops.isEmpty, "Should show cached data")
+        XCTAssertEqual(sut.allShops.count, 1)
+    }
+    
+    func testLoadOfflineWithCacheShowsData() async {
+        // Given - offline with cached data
+        let shop = ShopModel(
+            id: "1",
+            title: "Cached Shop",
+            iconUrl: "shop.png",
+            labels: nil,
+            tags: nil,
+            categories: nil,
+            about: nil,
+            type: nil,
+            code: nil,
+            status: nil
+        )
+        let cachedResponse = createMockHomeResponse(shops: [shop], tags: nil)
+        mockHomeRepository.cachedResponse = cachedResponse
+        mockNetworkMonitor.isConnected = false
+        
+        // When
+        await sut.load()
+        
+        // Then
+        XCTAssertFalse(sut.isLoading, "Should not be loading")
+        XCTAssertNil(sut.loadError, "Should not show error with cached data")
+        XCTAssertFalse(sut.allShops.isEmpty, "Should show cached data")
+        XCTAssertEqual(sut.allShops.count, 1)
+    }
+    
+    func testLoadOfflineWithoutCacheShowsError() async {
+        // Given - offline with no cached data
+        mockHomeRepository.cachedResponse = nil
+        mockNetworkMonitor.isConnected = false
+        
+        // When
+        await sut.load()
+        
+        // Then
+        XCTAssertFalse(sut.isLoading, "Should not be loading")
+        XCTAssertEqual(sut.loadError, .noInternetConnection, "Should show no internet error")
+        XCTAssertTrue(sut.allShops.isEmpty, "Should have no shops")
+    }
+    
+    func testLoadOfflineSearchWorksOnCachedData() async {
+        // Given - offline with cached data and query
+        let shop = ShopModel(
+            id: "1",
+            title: "Test Shop",
+            iconUrl: "shop.png",
+            labels: nil,
+            tags: nil,
+            categories: nil,
+            about: nil,
+            type: nil,
+            code: nil,
+            status: nil
+        )
+        let cachedResponse = createMockHomeResponse(shops: [shop], tags: nil)
+        mockHomeRepository.cachedResponse = cachedResponse
+        mockNetworkMonitor.isConnected = false
+        sut.query = "Test"
+        
+        // When
+        await sut.load()
+        
+        // Then
+        XCTAssertFalse(sut.results.isEmpty, "Should show search results from cached data")
+        XCTAssertEqual(sut.results.count, 1)
+    }
+    
+    func testLoadNetworkFailureWithCacheShowsData() async {
+        // Given - network fails but cache exists
+        let shop = ShopModel(
+            id: "1",
+            title: "Cached Shop",
+            iconUrl: "shop.png",
+            labels: nil,
+            tags: nil,
+            categories: nil,
+            about: nil,
+            type: nil,
+            code: nil,
+            status: nil
+        )
+        let cachedResponse = createMockHomeResponse(shops: [shop], tags: nil)
+        mockHomeRepository.cachedResponse = cachedResponse
+        mockNetworkMonitor.isConnected = true
+        mockHomeService.result = .failure(.serverError)
+        
+        // When
+        await sut.load()
+        
+        // Then
+        XCTAssertNil(sut.loadError, "Should not show error when cached data available")
+        XCTAssertFalse(sut.allShops.isEmpty, "Should show cached data")
     }
     
     // MARK: - Helper Methods

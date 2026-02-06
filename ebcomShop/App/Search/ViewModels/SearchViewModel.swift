@@ -13,6 +13,8 @@ import Observation
 final class SearchViewModel {
     private let homeService: HomeServiceProtocol
     private let searchHistoryRepository: SearchHistoryRepositoryProtocol
+    private let homeRepository: HomeRepositoryProtocol?
+    private let networkMonitor: NetworkMonitor?
     private var searchTask: Task<Void, Never>?
 
     var query = ""
@@ -28,10 +30,14 @@ final class SearchViewModel {
 
     init(
         homeService: HomeServiceProtocol,
-        searchHistoryRepository: SearchHistoryRepositoryProtocol
+        searchHistoryRepository: SearchHistoryRepositoryProtocol,
+        homeRepository: HomeRepositoryProtocol? = nil,
+        networkMonitor: NetworkMonitor? = nil
     ) {
         self.homeService = homeService
         self.searchHistoryRepository = searchHistoryRepository
+        self.homeRepository = homeRepository
+        self.networkMonitor = networkMonitor
         self.history = searchHistoryRepository.fetchTerms()
     }
 
@@ -39,20 +45,47 @@ final class SearchViewModel {
     func load() async {
         isLoading = true
         loadError = nil
-        defer { isLoading = false }
-
+        
+        // 1. Always load from cache first
+        if let cached = homeRepository?.fetchCached() {
+            allShops = cached.shops
+            tagIdToTitle = buildTagIdToTitle(from: cached.tags)
+        }
+        
+        // 2. If network not available, use cached data only
+        guard networkMonitor?.isConnected ?? true else {
+            isLoading = false
+            // Perform search on cached data if query exists
+            if trimmedQuery(query).count >= 3 {
+                performSearch(for: query)
+            }
+            // If no cached data, show error
+            if allShops.isEmpty {
+                loadError = .noInternetConnection
+            }
+            return
+        }
+        
+        // 3. Fetch from API
         let result = await homeService.fetchHome()
+        isLoading = false
+        
         switch result {
         case .success(let response):
+            // 4. Save to DB, then update data
+            try? homeRepository?.save(response)
             allShops = response.shops
             tagIdToTitle = buildTagIdToTitle(from: response.tags)
             if trimmedQuery(query).count >= 3 {
                 performSearch(for: query)
             }
         case .failure(let error):
-            loadError = error
-            allShops = []
-            tagIdToTitle = [:]
+            // If we have cached data, don't show error
+            if allShops.isEmpty {
+                loadError = error
+                allShops = []
+                tagIdToTitle = [:]
+            }
         }
     }
 

@@ -9,6 +9,8 @@ import SwiftUI
 
 struct HomeView: View {
     @Environment(\.homeService) private var homeService
+    @Environment(\.homeRepository) private var homeRepository
+    @Environment(\.networkMonitor) private var networkMonitor
     @State private var viewModel: HomeViewModel?
     @State private var showSeachView: Bool = false
 
@@ -19,7 +21,13 @@ struct HomeView: View {
                     content(viewModel: viewModel)
                 } else {
                     AppProgressView(style: .fullScreen)
-                        .task { viewModel = HomeViewModel(homeService: homeService) }
+                        .task {
+                            viewModel = HomeViewModel(
+                                homeService: homeService,
+                                homeRepository: homeRepository,
+                                networkMonitor: networkMonitor
+                            )
+                        }
                 }
             }
             .background(Color.background)
@@ -95,4 +103,5 @@ struct HomeView: View {
 #Preview {
     HomeView()
         .environment(\.homeService, HomeServiceImpl())
+        .environment(\.networkMonitor, NetworkMonitor())
 }

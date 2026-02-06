@@ -11,14 +11,15 @@ ebcomShop is a native iOS app built with SwiftUI: MVVM, a custom async networkin
 - **Home** – Sections for categories, banners, fixed banners, and shop listings
 - **Search** – Real-time search with debouncing and persistent history (SwiftData)
 - **Shop browsing** – Shops by category and tags; reusable image, tag, and row components
-- **Storage** – SwiftData for search history
+- **Offline Support** – Data cached locally with SwiftData; works without network
+- **Storage** – SwiftData for search history and home data caching
 
 ## Technical Stack
 
 - **UI**: SwiftUI, reusable components (loading, images, search bar, nav bar, tags, chips)
-- **Architecture**: MVVM with `@Observable`
-- **Networking**: Custom async layer (APIEndpoint, NetworkClient, ResponseHandler)
-- **Storage**: SwiftData (search history)
+- **Architecture**: MVVM with `@Observable`, offline-first pattern
+- **Networking**: Custom async layer (APIEndpoint, NetworkClient, ResponseHandler, NetworkMonitor)
+- **Storage**: SwiftData (search history, home data caching)
 - **Testing**: XCTest
 
 ## Requirements
@@ -43,10 +44,12 @@ ebcomShop/
 │   │                        # NavBarToolbar, BannerItemView, CategoryItemView,
 │   │                        # ShopItemView, SectionHeaderView, ErrorStateView,
 │   │                        # NavigationHeaderWithSearch, FAQRowView
-│   ├── DI/                  # EnvironmentKeys (homeService)
+│   ├── DI/                  # EnvironmentKeys (homeService, homeRepository, networkMonitor)
 │   ├── Home/
 │   │   ├── Models/          # BannerModel, CategoryModel, ShopModel, TagModel,
 │   │   │                    # FAQPayload, HomeModels, HomeSectionItem
+│   │   │   └── Cache/       # CachedHomeResponse (SwiftData)
+│   │   ├── Repositories/    # HomeRepositoryProtocol, HomeRepository
 │   │   ├── Views/           # HomeView; Sections: Banner, Category, Shop,
 │   │   │                    # FixedBanner, FAQ
 │   │   ├── ViewModels/      # HomeViewModel
@@ -63,22 +66,24 @@ ebcomShop/
 ├── Extensions/               # Dictionary+Extension, Font+Extension (TypographyStyle)
 ├── Logger/                  # OSLogger
 ├── Network/                 # NetworkClient, APIEndpoint, APIHandler, ResponseHandler,
-│                            # NetworkConfiguration, NetworkError, HTTPMethod
+│                            # NetworkConfiguration, NetworkError, HTTPMethod, NetworkMonitor
 ├── Resources/               # Assets.xcassets, Colors.xcassets, Fonts, Info.plist,
 │                            # LaunchScreen.storyboard
 └── ebcomShopApp.swift       # App entry, ModelContainer (SwiftData)
 
 ebcomShopTests/
 ├── ViewModels/              # HomeViewModelTests, SearchViewModelTests
+├── Repositories/            # HomeRepositoryTests
 ├── Network/                 # APIEndpointTests, NetworkClientTests, NetworkErrorTests,
-│                            # ResponseHandlerTests
+│                            # ResponseHandlerTests, NetworkMonitorTests
 └── Extensions/              # DictionaryExtensionTests
 ```
 
 ## Testing
 
-- **ViewModels**: HomeViewModel, SearchViewModel
-- **Network**: ResponseHandler, NetworkClient, NetworkError, APIEndpoint
+- **ViewModels**: HomeViewModel, SearchViewModel (including offline scenarios)
+- **Repositories**: HomeRepository
+- **Network**: ResponseHandler, NetworkClient, NetworkError, APIEndpoint, NetworkMonitor
 - **Extensions**: Dictionary helpers
 
 Run tests in Xcode with `Cmd+U`, or:
@@ -92,8 +97,15 @@ See [ebcomShopTests/README.md](ebcomShopTests/README.md) for details.
 ## Architecture
 
 - **MVVM**: Models (Decodable/Sendable), SwiftUI views, ViewModels with `@Observable`
+- **Offline-first Pattern**: Data cached locally and synced when network is available
+  - Always reads from cache first for instant UI updates
+  - Network sync updates cache in background when connected
+  - Works fully offline with cached data
 - **Network**: Protocol-based (APIEndpoint, NetworkClientProtocol); async/await
-- **Storage**: SwiftData for search history (SearchHistoryEntry, SearchHistoryRepository)
+  - `NetworkMonitor` for real-time connectivity detection using `NWPathMonitor`
+- **Storage**: SwiftData for persistence
+  - Search history (SearchHistoryEntry, SearchHistoryRepository)
+  - Home data caching (CachedHomeResponse, HomeRepository)
 - **Reusable UI**: AppProgressView, AppImageView, TagView, SearchBarView, NavBarToolbar, section/row/chip views
 
 ## Dependencies

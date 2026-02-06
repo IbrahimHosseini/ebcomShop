@@ -9,13 +9,13 @@ import Foundation
 
 // MARK: - FAQ
 
-struct FAQPayload: Decodable, Sendable {
+struct FAQPayload: Codable, Sendable {
     let id: String
     let title: String
     let sections: [FAQSectionItem]
 }
 
-struct FAQSectionItem: Decodable, Sendable {
+struct FAQSectionItem: Codable, Sendable {
     let title: String
     let description: String
 }

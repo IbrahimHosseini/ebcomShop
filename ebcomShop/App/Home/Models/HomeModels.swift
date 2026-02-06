@@ -9,7 +9,7 @@ import Foundation
 
 // MARK: - Home API Response
 
-struct HomeResponse: Decodable, Sendable {
+struct HomeResponse: Codable, Sendable {
     let home: HomePayload
     let categories: [CategoryModel]
     let shops: [ShopModel]
@@ -18,20 +18,20 @@ struct HomeResponse: Decodable, Sendable {
     let labels: [LabelModel]?
 }
 
-struct HomePayload: Decodable, Sendable {
+struct HomePayload: Codable, Sendable {
     let search: Bool?
     let faq: FAQPayload?
     let sections: [HomeSectionPayload]
 }
 
-struct HomeSectionPayload: Decodable, Sendable {
+struct HomeSectionPayload: Codable, Sendable {
     let title: String?
     let type: HomeSectionType
     let subType: String?
     let list: [String]
 }
 
-enum HomeSectionType: String, Decodable, Sendable {
+enum HomeSectionType: String, Codable, Sendable {
     case category = "CATEGORY"
     case banner = "BANNER"
     case shop = "SHOP"

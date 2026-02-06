@@ -9,7 +9,7 @@ import Foundation
 
 // MARK: - Banners
 
-struct BannerModel: Decodable, Sendable, Identifiable {
+struct BannerModel: Codable, Sendable, Identifiable {
     let id: String
     let imageUrl: String
 }

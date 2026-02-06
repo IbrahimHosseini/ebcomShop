@@ -12,16 +12,26 @@ import XCTest
 final class HomeViewModelTests: XCTestCase {
     private var sut: HomeViewModel!
     private var mockHomeService: MockHomeService!
+    private var mockHomeRepository: MockHomeRepository!
+    private var mockNetworkMonitor: MockNetworkMonitor!
     
     override func setUp() {
         super.setUp()
         mockHomeService = MockHomeService()
-        sut = HomeViewModel(homeService: mockHomeService)
+        mockHomeRepository = MockHomeRepository()
+        mockNetworkMonitor = MockNetworkMonitor()
+        sut = HomeViewModel(
+            homeService: mockHomeService,
+            homeRepository: mockHomeRepository,
+            networkMonitor: mockNetworkMonitor
+        )
     }
     
     override func tearDown() {
         sut = nil
         mockHomeService = nil
+        mockHomeRepository = nil
+        mockNetworkMonitor = nil
         super.tearDown()
     }
     
@@ -306,6 +316,103 @@ final class HomeViewModelTests: XCTestCase {
         XCTAssertFalse(sut.isLoading, "Should not be loading after completion")
     }
     
+    // MARK: - Offline Tests
+    
+    func testLoadShowsCachedDataImmediately() async {
+        // Given - cached data exists
+        let cachedResponse = createMockHomeResponse()
+        mockHomeRepository.cachedResponse = cachedResponse
+        mockHomeService.result = .success(createMockHomeResponse())
+        
+        // When
+        await sut.load()
+        
+        // Then
+        XCTAssertFalse(sut.sections.isEmpty, "Should show cached data")
+        XCTAssertEqual(sut.sections.count, 2)
+    }
+    
+    func testLoadUpdatesFromNetworkWhenConnected() async {
+        // Given - cached data exists and network is connected
+        let cachedResponse = createMockHomeResponse()
+        mockHomeRepository.cachedResponse = cachedResponse
+        mockNetworkMonitor.isConnected = true
+        
+        let freshShop = ShopModel(
+            id: "2",
+            title: "Fresh Shop",
+            iconUrl: "fresh.png",
+            labels: nil,
+            tags: nil,
+            categories: nil,
+            about: nil,
+            type: nil,
+            code: nil,
+            status: nil
+        )
+        let freshResponse = HomeResponse(
+            home: cachedResponse.home,
+            categories: cachedResponse.categories,
+            shops: [freshShop],
+            banners: [],
+            tags: nil,
+            labels: nil
+        )
+        mockHomeService.result = .success(freshResponse)
+        
+        // When
+        await sut.load()
+        
+        // Then
+        XCTAssertTrue(mockHomeRepository.saveCalled, "Should save fresh data")
+        XCTAssertNotNil(mockHomeRepository.savedResponse)
+    }
+    
+    func testLoadOfflineWithCacheShowsData() async {
+        // Given - offline with cached data
+        let cachedResponse = createMockHomeResponse()
+        mockHomeRepository.cachedResponse = cachedResponse
+        mockNetworkMonitor.isConnected = false
+        
+        // When
+        await sut.load()
+        
+        // Then
+        XCTAssertFalse(sut.isLoading, "Should not be loading")
+        XCTAssertNil(sut.loadError, "Should not show error with cached data")
+        XCTAssertFalse(sut.sections.isEmpty, "Should show cached data")
+        XCTAssertEqual(sut.sections.count, 2)
+    }
+    
+    func testLoadOfflineWithoutCacheShowsError() async {
+        // Given - offline with no cached data
+        mockHomeRepository.cachedResponse = nil
+        mockNetworkMonitor.isConnected = false
+        
+        // When
+        await sut.load()
+        
+        // Then
+        XCTAssertFalse(sut.isLoading, "Should not be loading")
+        XCTAssertEqual(sut.loadError, .noInternetConnection, "Should show no internet error")
+        XCTAssertTrue(sut.sections.isEmpty, "Should have no sections")
+    }
+    
+    func testLoadNetworkFailureWithCacheShowsData() async {
+        // Given - network fails but cache exists
+        let cachedResponse = createMockHomeResponse()
+        mockHomeRepository.cachedResponse = cachedResponse
+        mockNetworkMonitor.isConnected = true
+        mockHomeService.result = .failure(.serverError)
+        
+        // When
+        await sut.load()
+        
+        // Then
+        XCTAssertNil(sut.loadError, "Should not show error when cached data available")
+        XCTAssertFalse(sut.sections.isEmpty, "Should show cached data")
+    }
+    
     // MARK: - Helper Methods
     
     private func createMockHomeResponse() -> HomeResponse {
@@ -356,5 +463,42 @@ final class MockHomeService: HomeServiceProtocol {
             try? await Task.sleep(for: .seconds(delayInSeconds))
         }
         return result
+    }
+}
+
+// MARK: - Mock Home Repository
+
+@MainActor
+final class MockHomeRepository: HomeRepositoryProtocol {
+    var cachedResponse: HomeResponse?
+    var savedResponse: HomeResponse?
+    var saveCalled = false
+    var saveError: Error?
+    
+    nonisolated init() {}
+    
+    func fetchCached() -> HomeResponse? {
+        return cachedResponse
+    }
+    
+    func save(_ response: HomeResponse) throws {
+        saveCalled = true
+        savedResponse = response
+        if let error = saveError {
+            throw error
+        }
+    }
+}
+
+// MARK: - Mock Network Monitor
+
+final class MockNetworkMonitor: NetworkMonitor {
+    override init() {
+        super.init()
+    }
+    
+    convenience init(isConnected: Bool) {
+        self.init()
+        self.isConnected = isConnected
     }
 }

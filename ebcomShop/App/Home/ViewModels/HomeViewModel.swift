@@ -12,6 +12,8 @@ import Observation
 @Observable
 final class HomeViewModel {
     private let homeService: HomeServiceProtocol
+    private let homeRepository: HomeRepositoryProtocol?
+    private let networkMonitor: NetworkMonitor?
 
     private(set) var sections: [HomeSectionItem] = []
     private(set) var faq: FAQPayload?
@@ -19,25 +21,53 @@ final class HomeViewModel {
     private(set) var isLoading = false
     private(set) var loadError: NetworkError?
 
-    init(homeService: HomeServiceProtocol) {
+    init(
+        homeService: HomeServiceProtocol,
+        homeRepository: HomeRepositoryProtocol? = nil,
+        networkMonitor: NetworkMonitor? = nil
+    ) {
         self.homeService = homeService
+        self.homeRepository = homeRepository
+        self.networkMonitor = networkMonitor
     }
 
     func load() async {
         isLoading = true
         loadError = nil
-        defer { isLoading = false }
-
+        
+        // 1. Always load from cache first
+        if let cached = homeRepository?.fetchCached() {
+            sections = mapSections(cached)
+            faq = cached.home.faq
+        }
+        
+        // 2. If network not available, use cached data only
+        guard networkMonitor?.isConnected ?? true else {
+            isLoading = false
+            // If no cached data, show error
+            if sections.isEmpty {
+                loadError = .noInternetConnection
+            }
+            return
+        }
+        
+        // 3. Fetch from API
         let result = await homeService.fetchHome()
+        isLoading = false
 
         switch result {
         case .success(let response):
+            // 4. Save to DB, then update UI
+            try? homeRepository?.save(response)
             sections = mapSections(response)
             faq = response.home.faq
         case .failure(let error):
-            loadError = error
-            sections = []
-            faq = nil
+            // If we have cached data, don't show error
+            if sections.isEmpty {
+                loadError = error
+                sections = []
+                faq = nil
+            }
         }
     }
 
