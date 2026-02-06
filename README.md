@@ -96,17 +96,65 @@ See [ebcomShopTests/README.md](ebcomShopTests/README.md) for details.
 
 ## Architecture
 
-- **MVVM**: Models (Decodable/Sendable), SwiftUI views, ViewModels with `@Observable`
-- **Offline-first Pattern**: Data cached locally and synced when network is available
-  - Always reads from cache first for instant UI updates
-  - Network sync updates cache in background when connected
-  - Works fully offline with cached data
-- **Network**: Protocol-based (APIEndpoint, NetworkClientProtocol); async/await
-  - `NetworkMonitor` for real-time connectivity detection using `NWPathMonitor`
-- **Storage**: SwiftData for persistence
-  - Search history (SearchHistoryEntry, SearchHistoryRepository)
-  - Home data caching (CachedHomeResponse, HomeRepository)
-- **Reusable UI**: AppProgressView, AppImageView, TagView, SearchBarView, NavBarToolbar, section/row/chip views
+The app uses **MVVM** with an **offline-first** data layer: UI always reflects local data first, then syncs with the network when available.
+
+### Layers
+
+| Layer | Responsibility | Examples |
+|-------|----------------|----------|
+| **View** | SwiftUI UI, layout, user input | HomeView, SearchView, section/row components |
+| **ViewModel** | State, business logic, orchestration | HomeViewModel, SearchViewModel (`@Observable`) |
+| **Service** | Remote API calls | HomeServiceProtocol, HomeServiceImpl |
+| **Repository** | Local persistence (SwiftData) | HomeRepository, SearchHistoryRepository |
+| **Network** | HTTP client, connectivity | NetworkClient, NetworkMonitor |
+
+Views depend on ViewModels; ViewModels depend on **protocols** (services, repositories, connectivity) so implementations can be swapped for tests or offline behavior.
+
+### Offline-First Pattern
+
+Data flow is **cache-first, then network**:
+
+1. **Read from DB** – On load, the ViewModel reads from the local repository (SwiftData) and updates UI immediately if cached data exists.
+2. **Sync when online** – If the device is connected (`NetworkMonitor`), the ViewModel fetches from the API, writes the response to the repository, then updates UI.
+3. **Offline behavior** – If there is no network, the ViewModel does not call the API; UI shows cached data only. Errors are shown only when there is no cache and no connection.
+4. **Deletion** – For local-only data (e.g. search history), delete from the repository only; no API call.
+
+```mermaid
+sequenceDiagram
+    participant View
+    participant ViewModel
+    participant Repository
+    participant DB as SwiftData
+    participant Network
+
+    View->>ViewModel: load()
+    ViewModel->>Repository: fetchCached()
+    Repository->>DB: query
+    DB-->>Repository: cached data
+    Repository-->>ViewModel: HomeResponse?
+    ViewModel->>View: update UI (if cached)
+
+    alt Network available
+        ViewModel->>Network: fetchHome()
+        Network-->>ViewModel: fresh data
+        ViewModel->>Repository: save(response)
+        Repository->>DB: insert/update
+        ViewModel->>View: update UI
+    else Offline
+        ViewModel->>View: keep cached UI or show error if empty
+    end
+```
+
+### Key Components
+
+- **MVVM** – Models (Decodable/Sendable), SwiftUI views, ViewModels with `@Observable` for reactive updates.
+- **Network** – Protocol-based (APIEndpoint, NetworkClientProtocol); async/await. `NetworkMonitor` (via `NetworkConnectivityProviding`) uses `NWPathMonitor` for connectivity.
+- **Storage** – SwiftData for search history (SearchHistoryEntry, SearchHistoryRepository) and home cache (CachedHomeResponse, HomeRepository).
+- **DI** – Environment keys for `homeService`, `homeRepository`, `networkMonitor`; concrete types created in the app entry and passed into views.
+
+### Reusable UI
+
+Shared components: AppProgressView, AppImageView, TagView, SearchBarView, NavBarToolbar, section/row/chip views (BannerItemView, CategoryItemView, ShopItemView, etc.).
 
 ## Dependencies
 
