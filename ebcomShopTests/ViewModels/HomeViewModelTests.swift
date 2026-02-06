@@ -490,15 +490,12 @@ final class MockHomeRepository: HomeRepositoryProtocol {
     }
 }
 
-// MARK: - Mock Network Monitor
+// MARK: - Mock Network Monitor (conforms to protocol; does not subclass final NetworkMonitor)
 
-final class MockNetworkMonitor: NetworkMonitor {
-    override init() {
-        super.init()
-    }
-    
-    convenience init(isConnected: Bool) {
-        self.init()
+final class MockNetworkMonitor: NetworkConnectivityProviding {
+    var isConnected: Bool = true
+
+    init(isConnected: Bool = true) {
         self.isConnected = isConnected
     }
 }

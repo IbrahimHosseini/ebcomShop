@@ -37,11 +37,11 @@ extension EnvironmentValues {
 // MARK: - NetworkMonitor
 
 private struct NetworkMonitorKey: EnvironmentKey {
-    static let defaultValue: NetworkMonitor? = nil
+    static let defaultValue: (any NetworkConnectivityProviding)? = nil
 }
 
 extension EnvironmentValues {
-    var networkMonitor: NetworkMonitor? {
+    var networkMonitor: (any NetworkConnectivityProviding)? {
         get { self[NetworkMonitorKey.self] }
         set { self[NetworkMonitorKey.self] = newValue }
     }

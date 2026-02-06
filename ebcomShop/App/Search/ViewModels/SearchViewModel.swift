@@ -14,7 +14,7 @@ final class SearchViewModel {
     private let homeService: HomeServiceProtocol
     private let searchHistoryRepository: SearchHistoryRepositoryProtocol
     private let homeRepository: HomeRepositoryProtocol?
-    private let networkMonitor: NetworkMonitor?
+    private let networkMonitor: (any NetworkConnectivityProviding)?
     private var searchTask: Task<Void, Never>?
 
     var query = ""
@@ -32,7 +32,7 @@ final class SearchViewModel {
         homeService: HomeServiceProtocol,
         searchHistoryRepository: SearchHistoryRepositoryProtocol,
         homeRepository: HomeRepositoryProtocol? = nil,
-        networkMonitor: NetworkMonitor? = nil
+        networkMonitor: (any NetworkConnectivityProviding)? = nil
     ) {
         self.homeService = homeService
         self.searchHistoryRepository = searchHistoryRepository

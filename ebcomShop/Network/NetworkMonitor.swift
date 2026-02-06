@@ -9,8 +9,13 @@ import Foundation
 import Network
 import Observation
 
+/// Protocol for connectivity state; allows injecting mocks in tests.
+protocol NetworkConnectivityProviding: AnyObject {
+    var isConnected: Bool { get }
+}
+
 @Observable
-final class NetworkMonitor {
+final class NetworkMonitor: NetworkConnectivityProviding {
     private let monitor: NWPathMonitor
     private let queue = DispatchQueue(label: "NetworkMonitor")
     

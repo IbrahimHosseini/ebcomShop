@@ -13,7 +13,7 @@ import Observation
 final class HomeViewModel {
     private let homeService: HomeServiceProtocol
     private let homeRepository: HomeRepositoryProtocol?
-    private let networkMonitor: NetworkMonitor?
+    private let networkMonitor: (any NetworkConnectivityProviding)?
 
     private(set) var sections: [HomeSectionItem] = []
     private(set) var faq: FAQPayload?
@@ -24,7 +24,7 @@ final class HomeViewModel {
     init(
         homeService: HomeServiceProtocol,
         homeRepository: HomeRepositoryProtocol? = nil,
-        networkMonitor: NetworkMonitor? = nil
+        networkMonitor: (any NetworkConnectivityProviding)? = nil
     ) {
         self.homeService = homeService
         self.homeRepository = homeRepository
