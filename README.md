@@ -18,7 +18,7 @@ ebcomShop is a native iOS app built with SwiftUI: MVVM, a custom async networkin
 
 - **UI**: SwiftUI, reusable components (loading, images, search bar, nav bar, tags, chips)
 - **Architecture**: MVVM with `@Observable`, offline-first pattern
-- **Networking**: Custom async layer (APIEndpoint, NetworkClient, ResponseHandler, NetworkMonitor)
+- **Networking**: Custom async layer (APIEndpoint, APIHandler, NetworkClient, ResponseHandler, NetworkMonitor)
 - **Storage**: SwiftData (search history, home data caching)
 - **Testing**: XCTest
 
@@ -36,6 +36,8 @@ ebcomShop is a native iOS app built with SwiftUI: MVVM, a custom async networkin
 4. Build and run (`Cmd+R`).
 
 ## Project Structure
+
+The repo contains the app target **ebcomShop** and the test target **ebcomShopTests**. Root files: `develop.xctestplan` (test plan), `README.md`.
 
 ```
 ebcomShop/
@@ -62,11 +64,13 @@ ebcomShop/
 │       └── Views/           # SearchView, SearchResultRowView, SearchTextResultView,
 │                            # SearchHistorySectionView, HistoryChipView
 ├── Configs/                 # debug.xcconfig, release.xcconfig
-├── Constants/               # Constants (NetworkConfigKey), ResponseResult typealias
+├── Constants/               # Constants.NetworkConfigKey (baseURL, requestTimeout, etc.),
+│                            # ResponseResult<T> typealias
 ├── Extensions/               # Dictionary+Extension, Font+Extension (TypographyStyle)
 ├── Logger/                  # OSLogger
-├── Network/                 # NetworkClient, APIEndpoint, APIHandler, ResponseHandler,
-│                            # NetworkConfiguration, NetworkError, HTTPMethod, NetworkMonitor
+├── Network/                 # NetworkClient, NetworkClientProtocol, APIEndpoint, APIHandler,
+│                            # ResponseHandler, NetworkConfiguration, NetworkError, HTTPMethod,
+│                            # NetworkMonitor
 ├── Resources/               # Assets.xcassets, Colors.xcassets, Fonts, Info.plist,
 │                            # LaunchScreen.storyboard
 └── ebcomShopApp.swift       # App entry, ModelContainer (SwiftData)
@@ -86,7 +90,7 @@ ebcomShopTests/
 - **Network**: ResponseHandler, NetworkClient, NetworkError, APIEndpoint, NetworkMonitor
 - **Extensions**: Dictionary helpers
 
-Run tests in Xcode with `Cmd+U`, or:
+Run tests in Xcode with `Cmd+U`, or use the included **develop.xctestplan** to run the full test suite. From the command line:
 
 ```bash
 xcodebuild test -scheme ebcomShop -destination 'platform=iOS Simulator,name=iPhone 16'
@@ -148,9 +152,9 @@ sequenceDiagram
 ### Key Components
 
 - **MVVM** – Models (Decodable/Sendable), SwiftUI views, ViewModels with `@Observable` for reactive updates.
-- **Network** – Protocol-based (APIEndpoint, NetworkClientProtocol); async/await. `NetworkMonitor` (via `NetworkConnectivityProviding`) uses `NWPathMonitor` for connectivity.
+- **Network** – Protocol-based (APIEndpoint, APIHandler, NetworkClientProtocol, ResponseHandler); async/await. `NetworkMonitor` (via `NetworkConnectivityProviding`) uses `NWPathMonitor` for connectivity.
 - **Storage** – SwiftData for search history (SearchHistoryEntry, SearchHistoryRepository) and home cache (CachedHomeResponse, HomeRepository).
-- **DI** – Environment keys for `homeService`, `homeRepository`, `networkMonitor`; concrete types created in the app entry and passed into views.
+- **DI** – Environment keys for `homeService`, `homeRepository`, `networkMonitor`; concrete types (`HomeServiceImpl`, `HomeRepository`, `NetworkMonitor`) created in `ebcomShopApp` and injected into views.
 
 ### Reusable UI
 
@@ -163,5 +167,5 @@ Shared components: AppProgressView, AppImageView, TagView, SearchBarView, NavBar
 
 ## Configuration
 
-- `Network/NetworkConfiguration.swift` – base URL from Info.plist / .xcconfig
-- `Constants/Constants.swift` – NetworkConfigKey (e.g. API_BASE_URL)
+- **Network** – `Network/NetworkConfiguration.swift` loads base URL, timeout, retry, and logging from the build config. Keys are defined in `ebcomShop/Configs/debug.xcconfig` and `ebcomShop/Configs/release.xcconfig`, passed via Info.plist; fallback defaults are used if keys are missing.
+- **Constants** – `Constants/Constants.swift` defines `Constants.NetworkConfigKey` (e.g. `API_BASE_URL`, `NETWORK_REQUEST_TIMEOUT`, `NETWORK_MAX_RETRY_ATTEMPTS`, `NETWORK_LOGGING_ENABLED`) and the `ResponseResult<T>` typealias.
