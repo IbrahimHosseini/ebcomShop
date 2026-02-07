@@ -1,6 +1,6 @@
 # EBCOM Shop Test Suite
 
-This directory contains comprehensive unit tests for all logic functions in the ebcomShop application.
+This directory contains the **ebcomShopTests** target and unit tests for the ebcomShop application. Tests are organized in `ViewModels/`, `Repositories/`, `Network/`, and `Extensions/`. See the [main README](../README.md) for project overview and architecture.
 
 ## Test Coverage
 
@@ -21,6 +21,11 @@ This directory contains comprehensive unit tests for all logic functions in the 
   - Empty state handling
   - Search history management (add/delete)
   - Tag resolution
+
+### Repositories
+- **HomeRepositoryTests.swift**: Tests for `HomeRepository` (SwiftData in-memory) including:
+  - `fetchCached()` – returns nil when empty, returns data when cached
+  - `save()` – stores successfully, updates existing cache, preserves complete response, only stores single cache
 
 ### Extensions
 - **DictionaryExtensionTests.swift**: Tests for `Dictionary+Extension` including:
@@ -62,6 +67,11 @@ This directory contains comprehensive unit tests for all logic functions in the 
   - URL validation and error handling
   - Authentication flag testing
 
+- **NetworkMonitorTests.swift**: Tests for `NetworkMonitor` including:
+  - Initial state and connection type
+  - Observable behavior
+  - `MockNetworkMonitor` initialization with connected/disconnected state
+
 ## Test Structure
 
 Each test file follows this structure:
@@ -87,24 +97,25 @@ final class TestClassName: XCTestCase {
 The test suite includes the following mock implementations:
 
 - **MockHomeService**: Mock implementation of `HomeServiceProtocol` for testing ViewModels
-- **MockSearchHistoryRepository**: Mock implementation for search history persistence
-- **MockLocalStorage**: Mock implementation of `LocalStorageProtocol` for testing storage
-- **MockAPIHandler**: Mock implementation for network request execution
-- **MockResponseHandler**: Mock implementation for response parsing
-- **MockEndpoint**: Mock endpoints for network client testing
-- **TestEndpoint**: Test endpoint implementation for API endpoint testing
+- **MockSearchHistoryRepository**: Mock implementation of `SearchHistoryRepositoryProtocol` for search history in ViewModel tests
+- **MockAPIHandler**: Mock implementation of `APIHandler` for network request execution
+- **MockResponseHandler**: Mock implementation of `ResponseHandler` for response parsing
+- **MockEndpoint**: Mock endpoints for `NetworkClient` testing
+- **TestEndpoint**: Test endpoint enum conforming to `APIEndpoint` for API endpoint tests
+- **MockNetworkMonitor**: Mock implementation for `NetworkConnectivityProviding` used in NetworkMonitor tests
 
 ## Running Tests
 
 ### In Xcode
-1. Open `ebcomShop.xcodeproj` or `ebcomShop.xcworkspace`
-2. Select the `ebcomShopTests` scheme
+1. Open `ebcomShop.xcodeproj` (or workspace if used)
+2. Select the **ebcomShop** scheme (tests run with the app target)
 3. Press `Cmd+U` to run all tests
-4. Or use `Cmd+Ctrl+Option+U` to run tests with code coverage
+4. Use the included **develop.xctestplan** to run the full test suite
+5. Or use `Cmd+Ctrl+Option+U` to run tests with code coverage
 
 ### Command Line
 ```bash
-xcodebuild test -scheme ebcomShop -destination 'platform=iOS Simulator,name=iPhone 15'
+xcodebuild test -scheme ebcomShop -destination 'platform=iOS Simulator,name=iPhone 16'
 ```
 
 ## Test Naming Convention
@@ -127,5 +138,5 @@ To view code coverage:
 3. Select the test report
 4. Click on the Coverage tab
 
-Target coverage: 80%+ for logic classes
+Target coverage: 80%+ for logic classes.
 
