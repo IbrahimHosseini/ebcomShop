@@ -37,7 +37,7 @@ ebcomShop is a native iOS app built with SwiftUI: MVVM, a custom async networkin
 
 ## Project Structure
 
-The repo contains the app target **ebcomShop** and the test target **ebcomShopTests**. Root files: `develop.xctestplan` (test plan), `README.md`.
+The repo contains the app target **ebcomShop** and the test target **ebcomShopTests**. Root files: `develop.xctestplan` (test plan).
 
 ```
 ebcomShop/
@@ -95,8 +95,6 @@ Run tests in Xcode with `Cmd+U`, or use the included **develop.xctestplan** to r
 ```bash
 xcodebuild test -scheme ebcomShop -destination 'platform=iOS Simulator,name=iPhone 16'
 ```
-
-See [ebcomShopTests/README.md](ebcomShopTests/README.md) for details.
 
 ## Architecture
 
